@@ -5,7 +5,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/rcw5/vrops-cli/models"
+	"github.com/rcw5/vrops-cli/fakes"
 
 	. "github.com/rcw5/vrops-cli/presenters"
 )
@@ -21,27 +21,27 @@ var _ = Describe("TablePresenter", func() {
 		}
 	})
 
+	Context("#PresentResources", func() {
+		It("Returns table encoded output", func() {
+			presenter.PresentResources(fakes.FakeResources)
+			Expect(buffer.String()).To(Equal(`+-------------+---------------+----------------+-----------------+-------------+--------+
+|    NAME     |  IDENTIFIER   |  ADAPTERKIND   |  RESOURCEKIND   | DESCRIPTION | HEALTH |
++-------------+---------------+----------------+-----------------+-------------+--------+
+| my-resource | an-identifier | my-adapterkind | my-resourcekind | Description | GREEN  |
++-------------+---------------+----------------+-----------------+-------------+--------+
+`))
+		})
+	})
+
 	Context("#PresentAdapterKinds", func() {
 		It("Returns table encoded output", func() {
-			adapterKinds := models.AdapterKinds{
-				AdapterKind: []models.AdapterKind{
-					models.AdapterKind{
-						AdapterKindType: "type",
-						DescribeVersion: 1,
-						Description:     "description",
-						Key:             "key",
-						Name:            "name",
-						ResourceKinds:   []string{"res1", "res2"},
-					},
-				},
-			}
-
-			presenter.PresentAdapterKinds(adapterKinds)
-			Expect(buffer.String()).To(Equal(`+-----+------+-------------+-----------------+
-| KEY | NAME | DESCRIPTION | ADAPTERKINDTYPE |
-+-----+------+-------------+-----------------+
-| key | name | description | type            |
-+-----+------+-------------+-----------------+
+			presenter.PresentAdapterKinds(fakes.FakeAdapterKinds)
+			Expect(buffer.String()).To(Equal(`+---------------+------------+----------------------------+-----------------+
+|      KEY      |    NAME    |        DESCRIPTION         | ADAPTERKINDTYPE |
++---------------+------------+----------------------------+-----------------+
+| Adapter Key   | An Adapter | Nice long description here | Type            |
+| Adapter Key 2 | An Adapter | Nice long description here | Type            |
++---------------+------------+----------------------------+-----------------+
 `))
 		})
 	})

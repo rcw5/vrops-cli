@@ -6,7 +6,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/rcw5/vrops-cli/models"
+	"github.com/rcw5/vrops-cli/fakes"
 
 	. "github.com/rcw5/vrops-cli/presenters"
 )
@@ -22,23 +22,19 @@ var _ = Describe("JsonPresenter", func() {
 		}
 	})
 
+	Context("#PresentResources", func() {
+		It("Returns JSON encoded output", func() {
+			presenter.PresentResources(fakes.FakeResources)
+			jsonData, err := json.Marshal(fakes.FakeResources)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(buffer.String()).To(Equal(string(jsonData)))
+		})
+	})
+
 	Context("#PresentAdapterKinds", func() {
 		It("Returns JSON encoded output", func() {
-			adapterKinds := models.AdapterKinds{
-				AdapterKind: []models.AdapterKind{
-					models.AdapterKind{
-						AdapterKindType: "type",
-						DescribeVersion: 1,
-						Description:     "description",
-						Key:             "key",
-						Name:            "name",
-						ResourceKinds:   []string{"res1", "res2"},
-					},
-				},
-			}
-
-			presenter.PresentAdapterKinds(adapterKinds)
-			jsonData, err := json.Marshal(adapterKinds)
+			presenter.PresentAdapterKinds(fakes.FakeAdapterKinds)
+			jsonData, err := json.Marshal(fakes.FakeAdapterKinds)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(buffer.String()).To(Equal(string(jsonData)))
 

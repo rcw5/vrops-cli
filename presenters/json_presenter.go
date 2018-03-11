@@ -11,12 +11,16 @@ type JSONPresenter struct {
 	Buffer io.Writer
 }
 
-func (j JSONPresenter) PresentAdapterKinds(adapterKinds models.AdapterKinds) {
+func (j JSONPresenter) PresentAdapterKinds(adapterKinds []models.AdapterKind) {
 	j.jsonify(adapterKinds)
 }
 
 func (j JSONPresenter) PresentResourceKinds(resourceKinds []string) {
 	j.jsonify(resourceKinds)
+}
+
+func (j JSONPresenter) PresentResources(resources []models.Resource) {
+	j.jsonify(resources)
 }
 
 func (j JSONPresenter) jsonify(intf interface{}) {

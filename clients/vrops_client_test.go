@@ -3,6 +3,7 @@ package clients_test
 import (
 	"net/http"
 
+	"github.com/rcw5/vrops-cli/fakes"
 	"github.com/rcw5/vrops-cli/models"
 
 	. "github.com/onsi/ginkgo"
@@ -17,7 +18,7 @@ var _ = Describe("VRops Client", func() {
 
 	var _ = BeforeEach(func() {
 		server = ghttp.NewServer()
-		client = clients.NewVROpsClient(server.URL(), "hello", "world")
+		client = clients.NewVROpsClient(server.URL(), "hello", "world", false)
 	})
 
 	AfterEach(func() {
@@ -82,24 +83,29 @@ var _ = Describe("VRops Client", func() {
 		})
 	})
 
-	Context("AdapterKinds", func() {
-		var returnedAdapters models.AdapterKinds
+	Context("#ResourcesForAdapterKind", func() {
+		var returnedResources []models.Resource
+		var returnedPageInfo models.PageInfo
 		var statusCode int
 
 		BeforeEach(func() {
-			returnedAdapters = models.AdapterKinds{
-				AdapterKind: []models.AdapterKind{
-					models.AdapterKind{
-						Name: "Foobar",
-					},
-				},
+			returnedResources = fakes.FakeResources
+			returnedPageInfo = models.PageInfo{
+				TotalCount: 1,
+			}
+			data := struct {
+				ResourceList *[]models.Resource `json:"resourceList"`
+				PageInfo     *models.PageInfo   `json:"PageInfo"`
+			}{
+				ResourceList: &returnedResources,
+				PageInfo:     &returnedPageInfo,
 			}
 
 			server.AppendHandlers(
 				ghttp.CombineHandlers(
-					ghttp.VerifyRequest("GET", "/suite-api/api/adapterkinds"),
+					ghttp.VerifyRequest("GET", "/suite-api/api/adapterkinds/my-adapterkind/resources"),
 					ghttp.VerifyBasicAuth("hello", "world"),
-					ghttp.RespondWithJSONEncodedPtr(&statusCode, &returnedAdapters),
+					ghttp.RespondWithJSONEncodedPtr(&statusCode, &data),
 				),
 			)
 		})
@@ -107,10 +113,70 @@ var _ = Describe("VRops Client", func() {
 			BeforeEach(func() {
 				statusCode = http.StatusOK
 			})
+			It("Returns a list of resources", func() {
+				resources, err := client.ResourcesForAdapterKind("my-adapterkind")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resources).To(Equal(returnedResources))
+			})
+		})
+		Context("When the adapterkind does not exist", func() {
+			BeforeEach(func() {
+				statusCode = http.StatusOK
+				returnedResources = []models.Resource{}
+			})
+			It("Returns no resources", func() {
+				resources, err := client.ResourcesForAdapterKind("my-adapterkind")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resources).To(BeEmpty())
+				Expect(resources).To(Equal(returnedResources))
+			})
+		})
+		Context("When more than 1 page of information is returned", func() {
+			BeforeEach(func() {
+				returnedPageInfo = models.PageInfo{
+					TotalCount: 5,
+				}
+			})
+			It("Returns an error", func() {
+				_, err := client.ResourcesForAdapterKind("my-adapterkind")
+				Expect(err).To(MatchError("No support for result pagination yet, mate"))
+			})
+		})
+
+	})
+
+	Context("#AdapterKinds", func() {
+		var returnedAdapterKinds []models.AdapterKind
+		var returnedPageInfo models.PageInfo
+		var statusCode int
+
+		BeforeEach(func() {
+			statusCode = http.StatusOK
+			returnedPageInfo = models.PageInfo{
+				TotalCount: 1,
+			}
+			returnedAdapterKinds = fakes.FakeAdapterKinds
+			data := struct {
+				Adapters *[]models.AdapterKind `json:"adapter-kind"`
+				PageInfo *models.PageInfo      `json:"PageInfo"`
+			}{
+				Adapters: &returnedAdapterKinds,
+				PageInfo: &returnedPageInfo,
+			}
+
+			server.AppendHandlers(
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("GET", "/suite-api/api/adapterkinds"),
+					ghttp.VerifyBasicAuth("hello", "world"),
+					ghttp.RespondWithJSONEncodedPtr(&statusCode, &data),
+				),
+			)
+		})
+		Context("When the request succeeds", func() {
 			It("Retrieves a list of adapter kinds", func() {
 				adapters, err := client.AdapterKinds()
 				Expect(err).NotTo(HaveOccurred())
-				Expect(adapters).To(Equal(returnedAdapters))
+				Expect(adapters).To(Equal(returnedAdapterKinds))
 			})
 		})
 
@@ -121,7 +187,19 @@ var _ = Describe("VRops Client", func() {
 			It("Returns an error", func() {
 				adapters, err := client.AdapterKinds()
 				Expect(err).To(HaveOccurred())
-				Expect(adapters.AdapterKind).To(BeEmpty())
+				Expect(adapters).To(BeEmpty())
+			})
+		})
+
+		Context("When more than 1 page of information is returned", func() {
+			BeforeEach(func() {
+				returnedPageInfo = models.PageInfo{
+					TotalCount: 5,
+				}
+			})
+			It("Returns an error", func() {
+				_, err := client.AdapterKinds()
+				Expect(err).To(MatchError("No support for result pagination yet, mate"))
 			})
 		})
 

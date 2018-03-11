@@ -9,15 +9,15 @@ import (
 )
 
 type FakeVRopsClient struct {
-	AdapterKindsStub        func() (models.AdapterKinds, error)
+	AdapterKindsStub        func() ([]models.AdapterKind, error)
 	adapterKindsMutex       sync.RWMutex
 	adapterKindsArgsForCall []struct{}
 	adapterKindsReturns     struct {
-		result1 models.AdapterKinds
+		result1 []models.AdapterKind
 		result2 error
 	}
 	adapterKindsReturnsOnCall map[int]struct {
-		result1 models.AdapterKinds
+		result1 []models.AdapterKind
 		result2 error
 	}
 	ResourceKindsStub        func(string) ([]string, error)
@@ -33,11 +33,24 @@ type FakeVRopsClient struct {
 		result1 []string
 		result2 error
 	}
+	ResourcesForAdapterKindStub        func(string) ([]models.Resource, error)
+	resourcesForAdapterKindMutex       sync.RWMutex
+	resourcesForAdapterKindArgsForCall []struct {
+		arg1 string
+	}
+	resourcesForAdapterKindReturns struct {
+		result1 []models.Resource
+		result2 error
+	}
+	resourcesForAdapterKindReturnsOnCall map[int]struct {
+		result1 []models.Resource
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeVRopsClient) AdapterKinds() (models.AdapterKinds, error) {
+func (fake *FakeVRopsClient) AdapterKinds() ([]models.AdapterKind, error) {
 	fake.adapterKindsMutex.Lock()
 	ret, specificReturn := fake.adapterKindsReturnsOnCall[len(fake.adapterKindsArgsForCall)]
 	fake.adapterKindsArgsForCall = append(fake.adapterKindsArgsForCall, struct{}{})
@@ -58,24 +71,24 @@ func (fake *FakeVRopsClient) AdapterKindsCallCount() int {
 	return len(fake.adapterKindsArgsForCall)
 }
 
-func (fake *FakeVRopsClient) AdapterKindsReturns(result1 models.AdapterKinds, result2 error) {
+func (fake *FakeVRopsClient) AdapterKindsReturns(result1 []models.AdapterKind, result2 error) {
 	fake.AdapterKindsStub = nil
 	fake.adapterKindsReturns = struct {
-		result1 models.AdapterKinds
+		result1 []models.AdapterKind
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeVRopsClient) AdapterKindsReturnsOnCall(i int, result1 models.AdapterKinds, result2 error) {
+func (fake *FakeVRopsClient) AdapterKindsReturnsOnCall(i int, result1 []models.AdapterKind, result2 error) {
 	fake.AdapterKindsStub = nil
 	if fake.adapterKindsReturnsOnCall == nil {
 		fake.adapterKindsReturnsOnCall = make(map[int]struct {
-			result1 models.AdapterKinds
+			result1 []models.AdapterKind
 			result2 error
 		})
 	}
 	fake.adapterKindsReturnsOnCall[i] = struct {
-		result1 models.AdapterKinds
+		result1 []models.AdapterKind
 		result2 error
 	}{result1, result2}
 }
@@ -131,6 +144,57 @@ func (fake *FakeVRopsClient) ResourceKindsReturnsOnCall(i int, result1 []string,
 	}{result1, result2}
 }
 
+func (fake *FakeVRopsClient) ResourcesForAdapterKind(arg1 string) ([]models.Resource, error) {
+	fake.resourcesForAdapterKindMutex.Lock()
+	ret, specificReturn := fake.resourcesForAdapterKindReturnsOnCall[len(fake.resourcesForAdapterKindArgsForCall)]
+	fake.resourcesForAdapterKindArgsForCall = append(fake.resourcesForAdapterKindArgsForCall, struct {
+		arg1 string
+	}{arg1})
+	fake.recordInvocation("ResourcesForAdapterKind", []interface{}{arg1})
+	fake.resourcesForAdapterKindMutex.Unlock()
+	if fake.ResourcesForAdapterKindStub != nil {
+		return fake.ResourcesForAdapterKindStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.resourcesForAdapterKindReturns.result1, fake.resourcesForAdapterKindReturns.result2
+}
+
+func (fake *FakeVRopsClient) ResourcesForAdapterKindCallCount() int {
+	fake.resourcesForAdapterKindMutex.RLock()
+	defer fake.resourcesForAdapterKindMutex.RUnlock()
+	return len(fake.resourcesForAdapterKindArgsForCall)
+}
+
+func (fake *FakeVRopsClient) ResourcesForAdapterKindArgsForCall(i int) string {
+	fake.resourcesForAdapterKindMutex.RLock()
+	defer fake.resourcesForAdapterKindMutex.RUnlock()
+	return fake.resourcesForAdapterKindArgsForCall[i].arg1
+}
+
+func (fake *FakeVRopsClient) ResourcesForAdapterKindReturns(result1 []models.Resource, result2 error) {
+	fake.ResourcesForAdapterKindStub = nil
+	fake.resourcesForAdapterKindReturns = struct {
+		result1 []models.Resource
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeVRopsClient) ResourcesForAdapterKindReturnsOnCall(i int, result1 []models.Resource, result2 error) {
+	fake.ResourcesForAdapterKindStub = nil
+	if fake.resourcesForAdapterKindReturnsOnCall == nil {
+		fake.resourcesForAdapterKindReturnsOnCall = make(map[int]struct {
+			result1 []models.Resource
+			result2 error
+		})
+	}
+	fake.resourcesForAdapterKindReturnsOnCall[i] = struct {
+		result1 []models.Resource
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeVRopsClient) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -138,6 +202,8 @@ func (fake *FakeVRopsClient) Invocations() map[string][][]interface{} {
 	defer fake.adapterKindsMutex.RUnlock()
 	fake.resourceKindsMutex.RLock()
 	defer fake.resourceKindsMutex.RUnlock()
+	fake.resourcesForAdapterKindMutex.RLock()
+	defer fake.resourcesForAdapterKindMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

@@ -8,8 +8,9 @@ import (
 
 //go:generate counterfeiter -o ../fakes/FakePresenter.go --fake-name FakePresenter . Presenter
 type Presenter interface {
-	PresentAdapterKinds(models.AdapterKinds)
+	PresentAdapterKinds([]models.AdapterKind)
 	PresentResourceKinds([]string)
+	PresentResources([]models.Resource)
 }
 
 func NewPresenter(presenterType string) Presenter {

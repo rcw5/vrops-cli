@@ -18,6 +18,7 @@ GLOBAL OPTIONS:
    --username value, -u value  vRops Username [$VROPS_USERNAME]
    --password value, -p value  vRops Password [$VROPS_PASSWORD]
    --url value                 vRops URL [$VROPS_URL]
+   --verbose                   Enable verbose requests
    --help, -h                  show help
    --version, -v               print the version
 ```
@@ -31,7 +32,8 @@ USAGE:
 
 COMMANDS:
      adapterkinds   get all adapterkinds
-     resourcekinds  get all resourcekinds for an adapter
+     resourcekinds  get all resourcekinds for an adapterkind
+     resources      get all resources for an adapterkind
 
 OPTIONS:
    --help, -h  show help
