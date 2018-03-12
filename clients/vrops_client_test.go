@@ -25,6 +25,26 @@ var _ = Describe("VRops Client", func() {
 		server.Close()
 	})
 
+	Context("#CreateStats", func() {
+		It("POSTs numeric stats to the endpoint", func() {
+			statsForvRops := struct {
+				Stats []models.Stat `json:"stat-content"`
+			}{
+				fakes.FakeStats,
+			}
+			server.AppendHandlers(
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("POST", "/suite-api/api/resources/a-resource/stats"),
+					ghttp.VerifyBasicAuth("hello", "world"),
+					ghttp.VerifyJSONRepresenting(statsForvRops),
+				),
+			)
+
+			client.CreateStats("a-resource", fakes.FakeStats)
+			Expect(server.ReceivedRequests()).To(HaveLen(1))
+		})
+	})
+
 	Context("ResourceKinds", func() {
 		var returnedAdapter models.AdapterKind
 		var statusCode int

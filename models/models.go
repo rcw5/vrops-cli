@@ -57,3 +57,11 @@ type Resource struct {
 	Badges               []ResourceBadge       `json:"badges"`
 	Identifier           string                `json:"identifier"`
 }
+
+type Stat struct {
+	StatKey    string   `json:"statKey"`
+	Timestamps []int64  `json:"timestamps"`
+	Data       []int    `json:"data,omitempty"`
+	Values     []string `json:"values,omitempty"`
+	// } `json:"stat-content"`
+}

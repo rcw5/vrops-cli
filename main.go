@@ -47,6 +47,49 @@ func main() {
 
 	app.Commands = []cli.Command{
 		{
+			Name:  "create",
+			Usage: "Create objects in vRops",
+			Subcommands: []cli.Command{
+				cli.Command{
+					Name:  "stats",
+					Usage: "Create new stats in vRops",
+					Flags: []cli.Flag{
+						cli.StringFlag{Name: "stats-json"},
+					},
+					Action: func(c *cli.Context) error {
+						err := commands.CreateStats(c.Args().First(), c.String("stats-json"), client)
+						if err != nil {
+							return cli.NewExitError(err, 1)
+						}
+						return nil
+					},
+				},
+				cli.Command{
+					Name:  "resourcekinds",
+					Usage: "get all resourcekinds for an adapterkind",
+					Flags: []cli.Flag{
+						cli.StringFlag{Name: "output, o", Value: "table"},
+					},
+					Action: func(c *cli.Context) error {
+						if len(c.Args()) != 1 {
+							fmt.Println("Error with arguments:", c.Args(), "\n")
+							tmpl := cli.CommandHelpTemplate
+							cli.CommandHelpTemplate = strings.Replace(cli.CommandHelpTemplate, "[arguments...]", "<adapterkind>", -1)
+							cli.ShowCommandHelp(c, "resourcekinds")
+							cli.CommandHelpTemplate = tmpl
+							return nil
+						}
+						presenter := presenters.NewPresenter(c.String("output"))
+						err := commands.GetResourceKinds(c.Args().First(), client, presenter)
+						if err != nil {
+							return cli.NewExitError(err, 1)
+						}
+						return nil
+					},
+				},
+			},
+		},
+		{
 			Name:  "get",
 			Usage: "Retrieve data from vROps",
 			Subcommands: []cli.Command{

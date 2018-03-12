@@ -1,6 +1,7 @@
 package clients
 
 import (
+	"bytes"
 	"crypto/tls"
 	"encoding/json"
 	"errors"
@@ -17,6 +18,7 @@ type VRopsClientIntf interface {
 	AdapterKinds() ([]models.AdapterKind, error)
 	ResourceKinds(string) ([]string, error)
 	ResourcesForAdapterKind(string) ([]models.Resource, error)
+	CreateStats(string, []models.Stat) error
 }
 
 type VRopsClient struct {
@@ -35,8 +37,33 @@ func NewVROpsClient(url, username, password string, verbose bool) VRopsClient {
 	}
 }
 
+func (c VRopsClient) CreateStats(resource string, stats []models.Stat) error {
+	data := struct {
+		Stats []models.Stat `json:"stat-content"`
+	}{
+		Stats: stats,
+	}
+
+	jsonEnc, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	request, err := http.NewRequest("POST", c.buildUrl(fmt.Sprintf("api/resources/%s/stats", resource)), bytes.NewBuffer(jsonEnc))
+	if err != nil {
+		return err
+	}
+	request.Header.Set("Content-Type", "application/json")
+
+	_, err = c.do(request)
+	return err
+}
+
 func (c VRopsClient) ResourcesForAdapterKind(adapterKind string) ([]models.Resource, error) {
-	response, err := c.performGet(fmt.Sprintf("api/adapterkinds/%s/resources", adapterKind))
+	request, err := http.NewRequest("GET", c.buildUrl(fmt.Sprintf("api/adapterkinds/%s/resources", adapterKind)), nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.do(request)
 	if err != nil {
 		return []models.Resource{}, err
 	}
@@ -54,7 +81,11 @@ func (c VRopsClient) ResourcesForAdapterKind(adapterKind string) ([]models.Resou
 }
 
 func (c VRopsClient) AdapterKinds() ([]models.AdapterKind, error) {
-	response, err := c.performGet("api/adapterkinds")
+	request, err := http.NewRequest("GET", c.buildUrl("api/adapterkinds"), nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.do(request)
 	if err != nil {
 		return []models.AdapterKind{}, err
 	}
@@ -74,7 +105,12 @@ func (c VRopsClient) AdapterKinds() ([]models.AdapterKind, error) {
 }
 
 func (c VRopsClient) ResourceKinds(adapterKind string) ([]string, error) {
-	response, err := c.performGet(fmt.Sprintf("api/adapterkinds/%s", adapterKind))
+	request, err := http.NewRequest("GET", c.buildUrl(fmt.Sprintf("api/adapterkinds/%s", adapterKind)), nil)
+	if err != nil {
+		return []string{}, err
+	}
+
+	response, err := c.do(request)
 	if err != nil {
 		return []string{}, err
 	}
@@ -85,16 +121,21 @@ func (c VRopsClient) ResourceKinds(adapterKind string) ([]string, error) {
 	return dat.ResourceKinds, nil
 }
 
-func (c VRopsClient) performGet(uri string) ([]byte, error) {
+func (c VRopsClient) buildUrl(uri string) string {
+	return fmt.Sprintf("%s/suite-api/%s", c.url, uri)
+}
+
+func (c VRopsClient) do(req *http.Request) ([]byte, error) {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	client := &http.Client{Transport: tr}
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/suite-api/%s", c.url, uri), nil)
 	req.Header.Add("Accept", "application/json")
 	req.SetBasicAuth(c.username, c.password)
+
 	if c.verbose {
-		requestOutput, _ := httputil.DumpRequest(req, false)
+		dumpBody := req.Method != "GET"
+		requestOutput, _ := httputil.DumpRequest(req, dumpBody)
 		fmt.Println(string(requestOutput))
 	}
 	response, err := client.Do(req)
