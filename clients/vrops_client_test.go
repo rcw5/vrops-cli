@@ -167,21 +167,15 @@ var _ = Describe("VRops Client", func() {
 
 	Context("#AdapterKinds", func() {
 		var returnedAdapterKinds []models.AdapterKind
-		var returnedPageInfo models.PageInfo
 		var statusCode int
 
 		BeforeEach(func() {
 			statusCode = http.StatusOK
-			returnedPageInfo = models.PageInfo{
-				TotalCount: 1,
-			}
 			returnedAdapterKinds = fakes.FakeAdapterKinds
 			data := struct {
 				Adapters *[]models.AdapterKind `json:"adapter-kind"`
-				PageInfo *models.PageInfo      `json:"PageInfo"`
 			}{
 				Adapters: &returnedAdapterKinds,
-				PageInfo: &returnedPageInfo,
 			}
 
 			server.AppendHandlers(
@@ -208,18 +202,6 @@ var _ = Describe("VRops Client", func() {
 				adapters, err := client.AdapterKinds()
 				Expect(err).To(HaveOccurred())
 				Expect(adapters).To(BeEmpty())
-			})
-		})
-
-		Context("When more than 1 page of information is returned", func() {
-			BeforeEach(func() {
-				returnedPageInfo = models.PageInfo{
-					TotalCount: 5,
-				}
-			})
-			It("Returns an error", func() {
-				_, err := client.AdapterKinds()
-				Expect(err).To(MatchError("No support for result pagination yet, mate"))
 			})
 		})
 

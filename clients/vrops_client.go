@@ -91,15 +91,11 @@ func (c VRopsClient) AdapterKinds() ([]models.AdapterKind, error) {
 	}
 
 	var data struct {
-		PageInfo     models.PageInfo      `json:"pageInfo"`
 		AdapterKinds []models.AdapterKind `json:"adapter-kind"`
 	}
 
 	if err := json.Unmarshal(response, &data); err != nil {
 		return []models.AdapterKind{}, err
-	}
-	if data.PageInfo.TotalCount != 1 {
-		return []models.AdapterKind{}, errors.New("No support for result pagination yet, mate")
 	}
 	return data.AdapterKinds, nil
 }
