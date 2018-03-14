@@ -1,38 +1,69 @@
 # Usage
 
+```
+Wouldn't it be amazing if you didn't need to worry about the vROps REST API!?
+
+Usage:
+  vrops-cli [command]
+
+Available Commands:
+  create      Change stuff in vROps
+  get         Retrieve stuff from vROps
+  help        Help about any command
+
+Flags:
+  -h, --help              help for vrops-cli
+  -p, --password string   vROps password
+  -t, --target string     url to vROps instance
+      --trace             enable request tracing
+  -u, --username string   vROps username
+
+Use "vrops-cli [command] --help" for more information about a command.
+```
+
 ## `create`
 
 ```
-NAME:
-   vrops-cli create - Create objects in vRops
+Change stuff in vROps
 
-USAGE:
-   vrops-cli create command [command options] [arguments...]
+Usage:
+  vrops-cli create [command]
 
-COMMANDS:
-     stats  Create new stats in vRops
+Available Commands:
+  stats       Create stats for a resource
 
-OPTIONS:
-   --help, -h  show help
+Flags:
+  -h, --help   help for create
+
+Global Flags:
+  -p, --password string   vROps password
+  -t, --target string     url to vROps instance
+      --trace             enable request tracing
+  -u, --username string   vROps username
+
+Use "vrops-cli create [command] --help" for more information about a command.
 ```
 
 ### `create stats`
 
 ```
-NAME:
-   vrops-cli create stats - Create new stats in vRops
+Create stats for a resource
 
-USAGE:
-   vrops-cli create stats [command options] [arguments...]
+Usage:
+  vrops-cli create stats [resource] [flags]
 
-DESCRIPTION:
-   Upload one or more stats for a specific resource
+Flags:
+  -h, --help               help for stats
+      --statsjson string   JSON-encoded stats to be uploaded
 
-OPTIONS:
-   --stats-json value
+Global Flags:
+  -p, --password string   vROps password
+  -t, --target string     url to vROps instance
+      --trace             enable request tracing
+  -u, --username string   vROps username
 ```
 
-Example `--stats-json`:
+Example `--statsjson`:
 
 ```
 [{
@@ -53,22 +84,47 @@ Example `--stats-json`:
 ## `get`
 
 ```
-NAME:
-   vrops-cli get - Retrieve data from vROps
+Retrieve stuff from vROps
 
-USAGE:
-   vrops-cli get command [command options] [arguments...]
+Usage:
+  vrops-cli get [command]
 
-COMMANDS:
-     adapterkinds   get all adapterkinds
-     resourcekinds  get all resourcekinds for an adapterkind
-     resources      get all resources for an adapterkind
+Available Commands:
+  adapterkinds  Get all adapterkinds
+  resourcekinds List resourceskinds for a given adapterkind
+  resources     List resources for a given adapterkind
 
-OPTIONS:
-   --help, -h  show help
+Flags:
+  -h, --help            help for get
+  -o, --output string   Output format (table or json) (default "table")
+
+Global Flags:
+  -p, --password string   vROps password
+  -t, --target string     url to vROps instance
+      --trace             enable request tracing
+  -u, --username string   vROps username
+
+Use "vrops-cli get [command] --help" for more information about a command.
 ```
 
 ### `get adapterkinds`
+
+```
+Get all adapterkinds
+
+Usage:
+  vrops-cli get adapterkinds [flags]
+
+Flags:
+  -h, --help   help for adapterkinds
+
+Global Flags:
+  -o, --output string     Output format (table or json) (default "table")
+  -p, --password string   vROps password
+  -t, --target string     url to vROps instance
+      --trace             enable request tracing
+  -u, --username string   vROps username
+```
 
 ```
 % vrops-cli get adapterkinds
@@ -98,18 +154,20 @@ OPTIONS:
 ### `get resourcekinds`
 
 ```
-NAME:
-   vrops-cli get resourcekinds - get all resourcekinds for a given adapterkind
+List resourceskinds for a given adapterkind
 
-USAGE:
-   vrops-cli get resourcekinds [command options] [arguments...]
+Usage:
+  vrops-cli get resourcekinds [adapterkind] [flags]
 
-DESCRIPTION:
-   Returns all resourcekinds configured in vRops
-   An resourcekind is the class of entities that represent objects or information sources
+Flags:
+  -h, --help   help for resourcekinds
 
-OPTIONS:
-   --output value, -o value  Set an output format: json or table (default: "table")
+Global Flags:
+  -o, --output string     Output format (table or json) (default "table")
+  -p, --password string   vROps password
+  -t, --target string     url to vROps instance
+      --trace             enable request tracing
+  -u, --username string   vROps username
 ```
 
 ```
@@ -134,17 +192,20 @@ OPTIONS:
 ### `get resources`
 
 ```
-NAME:
-   vrops-cli get resources - get all resources for an adapterkind
+List resources for a given adapterkind
 
-USAGE:
-   vrops-cli get resources [command options] [arguments...]
+Usage:
+  vrops-cli get resources [adapterkind] [flags]
 
-DESCRIPTION:
-   Returns all resources for a specific adapterkind. Use the returned identifier to create stats.
+Flags:
+  -h, --help   help for resources
 
-OPTIONS:
-   --output value, -o value  Set an output format: json or table (default: "table")
+Global Flags:
+  -o, --output string     Output format (table or json) (default "table")
+  -p, --password string   vROps password
+  -t, --target string     url to vROps instance
+      --trace             enable request tracing
+  -u, --username string   vROps username
 ```
 
 ```

@@ -33,7 +33,7 @@ All commands need the URL of, and credentials for, your vRops instance. These ca
 ```
 
 ```
-% vrops-cli --url https://vrops.example.org -u admin -p SuperSecretPassword get adapterkinds
+% vrops-cli --target https://vrops.example.org --username admin --password SuperSecretPassword get adapterkinds
 ...
 ```
 
@@ -45,10 +45,10 @@ All `get` commands support two output types: `table` and `json`.
 
 ### Debugging
 
-Use the `--verbose` flag to enable verbose output, where all HTTP request/responses are printed to `stdout`
+Use the `--trace` flag to enable verbose output, where all HTTP request/responses are printed to `stdout`
 
 ```
-% vrops-cli --verbose get adapterkinds
+% vrops-cli --trace get adapterkinds
 GET /suite-api/api/adapterkinds HTTP/1.1
 Host: 192.168.0.32
 Accept: application/json
