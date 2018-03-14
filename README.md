@@ -7,7 +7,7 @@ A CLI to interact with the vRealize Operations Manager SDK.
 To install:
 
 ```
-% go get -u github.com/rcw5/pipeline-validator
+% go get -u github.com/rcw5/vrops-cli
 ```
 
 ## Usage
