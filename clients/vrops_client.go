@@ -74,7 +74,7 @@ func (c VRopsClient) ResourcesForAdapterKind(adapterKind string) ([]models.Resou
 	if err := json.Unmarshal(response, &data); err != nil {
 		return []models.Resource{}, err
 	}
-	if data.PageInfo.TotalCount > 1 {
+	if data.PageInfo.TotalCount > data.PageInfo.PageSize {
 		return []models.Resource{}, errors.New("No support for result pagination yet, mate")
 	}
 	return data.ResourceList, nil

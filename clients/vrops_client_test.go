@@ -112,6 +112,7 @@ var _ = Describe("VRops Client", func() {
 			returnedResources = fakes.FakeResources
 			returnedPageInfo = models.PageInfo{
 				TotalCount: 1,
+				PageSize:   1000,
 			}
 			data := struct {
 				ResourceList *[]models.Resource `json:"resourceList"`
