@@ -10,6 +10,7 @@ import (
 )
 
 var client clients.VRopsClientIntf
+var cmdErr error
 
 var rootCmd = &cobra.Command{
 	Use:   "vrops-cli",
@@ -20,6 +21,12 @@ var rootCmd = &cobra.Command{
 		password := envVarFlagOrFail("VROPS_PASSWORD", "password", cmd)
 		url := envVarFlagOrFail("VROPS_URL", "target", cmd)
 		client = clients.NewVROpsClient(url, username, password, trace)
+	},
+	PersistentPostRun: func(cmd *cobra.Command, args []string) {
+		if cmdErr != nil {
+			fmt.Printf("Error: %s\n", cmdErr)
+			os.Exit(1)
+		}
 	},
 }
 

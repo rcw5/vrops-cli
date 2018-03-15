@@ -12,7 +12,7 @@ var getAdapterKindsCmd = &cobra.Command{
 	Short: "Get all adapterkinds",
 	Run: func(cmd *cobra.Command, args []string) {
 		presenter := presenters.NewPresenter(cmd.Flag("output").Value.String())
-		GetAdapterKinds(client, presenter)
+		cmdErr = GetAdapterKinds(client, presenter)
 	},
 }
 

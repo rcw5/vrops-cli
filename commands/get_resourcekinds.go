@@ -12,7 +12,7 @@ var getResourceKindsCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		presenter := presenters.NewPresenter(cmd.Flag("output").Value.String())
-		GetResourceKinds(args[0], client, presenter)
+		cmdErr = GetResourceKinds(args[0], client, presenter)
 	},
 }
 

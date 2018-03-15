@@ -13,7 +13,7 @@ var createStatsCmd = &cobra.Command{
 	Short: "Create stats for a resource",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		CreateStats(args[0], cmd.Flag("statsjson").Value.String(), client)
+		cmdErr = CreateStats(args[0], cmd.Flag("statsjson").Value.String(), client)
 	},
 }
 
