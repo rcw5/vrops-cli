@@ -1,0 +1,21 @@
+{
+  "description": "This is a resource kind it appears",
+  "resourceKey": {
+    "name": "resourceKey3",
+    "adapterKindKey": "foobarAdapter2",
+    "resourceKindKey": "foobarResource2",
+    "resourceIdentifiers": [
+      {
+        "identifierType": {
+          "name": "the-identifier",
+          "dataType": "STRING",
+          "isPartOfUniqueness": true
+        },
+        "value": "hello5"
+      }
+    ]
+  },
+  "credentialInstanceId": "",
+  "resourceStatusStates": [],
+  "dtEnabled": true
+}

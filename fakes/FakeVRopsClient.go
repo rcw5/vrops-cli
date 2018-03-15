@@ -58,6 +58,17 @@ type FakeVRopsClient struct {
 	createStatsReturnsOnCall map[int]struct {
 		result1 error
 	}
+	CreateResourceStub        func(models.Resource) error
+	createResourceMutex       sync.RWMutex
+	createResourceArgsForCall []struct {
+		arg1 models.Resource
+	}
+	createResourceReturns struct {
+		result1 error
+	}
+	createResourceReturnsOnCall map[int]struct {
+		result1 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -261,6 +272,54 @@ func (fake *FakeVRopsClient) CreateStatsReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
+func (fake *FakeVRopsClient) CreateResource(arg1 models.Resource) error {
+	fake.createResourceMutex.Lock()
+	ret, specificReturn := fake.createResourceReturnsOnCall[len(fake.createResourceArgsForCall)]
+	fake.createResourceArgsForCall = append(fake.createResourceArgsForCall, struct {
+		arg1 models.Resource
+	}{arg1})
+	fake.recordInvocation("CreateResource", []interface{}{arg1})
+	fake.createResourceMutex.Unlock()
+	if fake.CreateResourceStub != nil {
+		return fake.CreateResourceStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.createResourceReturns.result1
+}
+
+func (fake *FakeVRopsClient) CreateResourceCallCount() int {
+	fake.createResourceMutex.RLock()
+	defer fake.createResourceMutex.RUnlock()
+	return len(fake.createResourceArgsForCall)
+}
+
+func (fake *FakeVRopsClient) CreateResourceArgsForCall(i int) models.Resource {
+	fake.createResourceMutex.RLock()
+	defer fake.createResourceMutex.RUnlock()
+	return fake.createResourceArgsForCall[i].arg1
+}
+
+func (fake *FakeVRopsClient) CreateResourceReturns(result1 error) {
+	fake.CreateResourceStub = nil
+	fake.createResourceReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeVRopsClient) CreateResourceReturnsOnCall(i int, result1 error) {
+	fake.CreateResourceStub = nil
+	if fake.createResourceReturnsOnCall == nil {
+		fake.createResourceReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.createResourceReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
 func (fake *FakeVRopsClient) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -272,6 +331,8 @@ func (fake *FakeVRopsClient) Invocations() map[string][][]interface{} {
 	defer fake.resourcesForAdapterKindMutex.RUnlock()
 	fake.createStatsMutex.RLock()
 	defer fake.createStatsMutex.RUnlock()
+	fake.createResourceMutex.RLock()
+	defer fake.createResourceMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

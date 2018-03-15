@@ -47,11 +47,11 @@ type ResourceBadge struct {
 
 type Resource struct {
 	Description          string                `json:"description"`
-	CreationTime         int64                 `json:"creationTime"`
+	CreationTime         int64                 `json:"creationTime,omitempty"`
 	ResourceKey          ResourceKey           `json:"resourceKey"`
 	ResourceStatusStates []ResourceStatusState `json:"resourceStatusStates"`
-	ResourceHealth       string                `json:"resourceHealth"`
-	ResourceHealthValue  float32               `json:"resourceHealthValue"`
+	ResourceHealth       string                `json:"resourceHealth,omitempty"`
+	ResourceHealthValue  float32               `json:"resourceHealthValue,omitempty"`
 	DtEnabled            bool                  `json:"dtEnabled"`
 	MonitoringInterval   int                   `json:"monitoringInterval"`
 	Badges               []ResourceBadge       `json:"badges"`

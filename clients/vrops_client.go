@@ -19,6 +19,7 @@ type VRopsClientIntf interface {
 	ResourceKinds(string) ([]string, error)
 	ResourcesForAdapterKind(string) ([]models.Resource, error)
 	CreateStats(string, []models.Stat) error
+	CreateResource(models.Resource) error
 }
 
 type VRopsClient struct {
@@ -37,6 +38,21 @@ func NewVROpsClient(url, username, password string, verbose bool) VRopsClient {
 	}
 }
 
+func (c VRopsClient) CreateResource(resource models.Resource) error {
+	jsonEnc, err := json.Marshal(resource)
+	if err != nil {
+		return err
+	}
+	request, err := http.NewRequest("POST", c.buildUrl(fmt.Sprintf("api/resources/adapterkinds/%s", resource.ResourceKey.AdapterKindKey)), bytes.NewBuffer(jsonEnc))
+	if err != nil {
+		return err
+	}
+	request.Header.Set("Content-Type", "application/json")
+
+	_, err = c.do(request)
+	return err
+
+}
 func (c VRopsClient) CreateStats(resource string, stats []models.Stat) error {
 	data := struct {
 		Stats []models.Stat `json:"stat-content"`

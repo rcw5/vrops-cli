@@ -1,6 +1,7 @@
 package clients_test
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/rcw5/vrops-cli/fakes"
@@ -23,6 +24,22 @@ var _ = Describe("VRops Client", func() {
 
 	AfterEach(func() {
 		server.Close()
+	})
+
+	Context("#CreateResource", func() {
+		It("POSTs the resource definition to the endpoint", func() {
+			resource := fakes.FakeResources[0]
+			server.AppendHandlers(
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("POST", fmt.Sprintf("/suite-api/api/resources/adapterkinds/%s", resource.ResourceKey.AdapterKindKey)),
+					ghttp.VerifyBasicAuth("hello", "world"),
+					ghttp.VerifyJSONRepresenting(resource),
+				),
+			)
+
+			client.CreateResource(resource)
+			Expect(server.ReceivedRequests()).To(HaveLen(1))
+		})
 	})
 
 	Context("#CreateStats", func() {

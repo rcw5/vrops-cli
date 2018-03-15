@@ -80,6 +80,30 @@ Example `--statsjson`:
 ```
 (Note: timestamps are in milliseconds)
 
+See [samples/stats.json](samples/stats.json) for a sample.
+
+### `create resource`
+
+```
+Create a new resource and associated adapterkind and resourcekind, if they do not already exist.
+
+See samples/resource.json for an example payload.
+
+Usage:
+  vrops-cli create resource [flags]
+
+Flags:
+      --definition string   JSON-encoded definition of the new resource (required)
+  -h, --help                help for resource
+
+Global Flags:
+  -p, --password string   vROps password
+  -t, --target string     url to vROps instance
+      --trace             enable request tracing
+  -u, --username string   vROps username
+  ```
+
+See [samples/resource.json](samples/resource.json) for a sample.
 
 ## `get`
 
