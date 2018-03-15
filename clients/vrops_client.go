@@ -160,7 +160,7 @@ func (c VRopsClient) do(req *http.Request) ([]byte, error) {
 
 	}
 	defer response.Body.Close()
-	if response.StatusCode != 200 {
+	if response.StatusCode < 200 || response.StatusCode >= 300 {
 		return nil, fmt.Errorf("Request failed: %d", response.StatusCode)
 	}
 	contents, err := ioutil.ReadAll(response.Body)
