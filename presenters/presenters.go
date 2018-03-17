@@ -10,7 +10,7 @@ import (
 type Presenter interface {
 	PresentAdapterKinds([]models.AdapterKind)
 	PresentResourceKinds([]string)
-	PresentResources([]models.Resource)
+	PresentResources(models.Resources)
 }
 
 func NewPresenter(presenterType string) Presenter {

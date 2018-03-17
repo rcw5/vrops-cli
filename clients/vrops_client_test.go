@@ -121,7 +121,7 @@ var _ = Describe("VRops Client", func() {
 	})
 
 	Context("#ResourcesForAdapterKind", func() {
-		var returnedResources []models.Resource
+		var returnedResources models.Resources
 		var returnedPageInfo models.PageInfo
 		var statusCode int
 
@@ -132,8 +132,8 @@ var _ = Describe("VRops Client", func() {
 				PageSize:   1000,
 			}
 			data := struct {
-				ResourceList *[]models.Resource `json:"resourceList"`
-				PageInfo     *models.PageInfo   `json:"PageInfo"`
+				ResourceList *models.Resources `json:"resourceList"`
+				PageInfo     *models.PageInfo  `json:"PageInfo"`
 			}{
 				ResourceList: &returnedResources,
 				PageInfo:     &returnedPageInfo,
@@ -160,7 +160,7 @@ var _ = Describe("VRops Client", func() {
 		Context("When the adapterkind does not exist", func() {
 			BeforeEach(func() {
 				statusCode = http.StatusOK
-				returnedResources = []models.Resource{}
+				returnedResources = models.Resources{}
 			})
 			It("Returns no resources", func() {
 				resources, err := client.ResourcesForAdapterKind("my-adapterkind")

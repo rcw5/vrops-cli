@@ -2,7 +2,7 @@ package fakes
 
 import "github.com/rcw5/vrops-cli/models"
 
-var FakeResources = []models.Resource{
+var FakeResources = models.Resources{
 	models.Resource{
 		Description: "Description",
 		ResourceKey: models.ResourceKey{

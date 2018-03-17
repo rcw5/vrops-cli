@@ -1,5 +1,7 @@
 package models
 
+import "fmt"
+
 type PageInfo struct {
 	TotalCount int `json:"totalCount"`
 	Page       int `json:"page"`
@@ -56,6 +58,17 @@ type Resource struct {
 	MonitoringInterval   int                   `json:"monitoringInterval"`
 	Badges               []ResourceBadge       `json:"badges"`
 	Identifier           string                `json:"identifier"`
+}
+
+type Resources []Resource
+
+func (r Resources) FindResource(name string) (Resource, error) {
+	for _, v := range r {
+		if v.ResourceKey.Name == name {
+			return v, nil
+		}
+	}
+	return Resource{}, fmt.Errorf("Cannot find resource: %s", name)
 }
 
 type Stat struct {

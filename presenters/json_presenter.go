@@ -19,7 +19,7 @@ func (j JSONPresenter) PresentResourceKinds(resourceKinds []string) {
 	j.jsonify(resourceKinds)
 }
 
-func (j JSONPresenter) PresentResources(resources []models.Resource) {
+func (j JSONPresenter) PresentResources(resources models.Resources) {
 	j.jsonify(resources)
 }
 

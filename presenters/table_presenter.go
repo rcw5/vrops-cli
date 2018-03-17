@@ -20,7 +20,7 @@ func (t TablePresenter) PresentAdapterKinds(adapterKinds []models.AdapterKind) {
 	table.Render()
 }
 
-func (t TablePresenter) PresentResources(resources []models.Resource) {
+func (t TablePresenter) PresentResources(resources models.Resources) {
 	table := tablewriter.NewWriter(t.Buffer)
 	table.SetHeader([]string{"Name", "Identifier", "AdapterKind", "ResourceKind", "Description", "Health"})
 	for _, resource := range resources {

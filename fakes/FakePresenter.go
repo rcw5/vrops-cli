@@ -19,10 +19,10 @@ type FakePresenter struct {
 	presentResourceKindsArgsForCall []struct {
 		arg1 []string
 	}
-	PresentResourcesStub        func([]models.Resource)
+	PresentResourcesStub        func(models.Resources)
 	presentResourcesMutex       sync.RWMutex
 	presentResourcesArgsForCall []struct {
-		arg1 []models.Resource
+		arg1 models.Resources
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -86,17 +86,12 @@ func (fake *FakePresenter) PresentResourceKindsArgsForCall(i int) []string {
 	return fake.presentResourceKindsArgsForCall[i].arg1
 }
 
-func (fake *FakePresenter) PresentResources(arg1 []models.Resource) {
-	var arg1Copy []models.Resource
-	if arg1 != nil {
-		arg1Copy = make([]models.Resource, len(arg1))
-		copy(arg1Copy, arg1)
-	}
+func (fake *FakePresenter) PresentResources(arg1 models.Resources) {
 	fake.presentResourcesMutex.Lock()
 	fake.presentResourcesArgsForCall = append(fake.presentResourcesArgsForCall, struct {
-		arg1 []models.Resource
-	}{arg1Copy})
-	fake.recordInvocation("PresentResources", []interface{}{arg1Copy})
+		arg1 models.Resources
+	}{arg1})
+	fake.recordInvocation("PresentResources", []interface{}{arg1})
 	fake.presentResourcesMutex.Unlock()
 	if fake.PresentResourcesStub != nil {
 		fake.PresentResourcesStub(arg1)
@@ -109,7 +104,7 @@ func (fake *FakePresenter) PresentResourcesCallCount() int {
 	return len(fake.presentResourcesArgsForCall)
 }
 
-func (fake *FakePresenter) PresentResourcesArgsForCall(i int) []models.Resource {
+func (fake *FakePresenter) PresentResourcesArgsForCall(i int) models.Resources {
 	fake.presentResourcesMutex.RLock()
 	defer fake.presentResourcesMutex.RUnlock()
 	return fake.presentResourcesArgsForCall[i].arg1

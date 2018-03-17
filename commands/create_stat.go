@@ -15,7 +15,7 @@ var (
 	value             float64
 )
 var createStatCmd = &cobra.Command{
-	Use:   "stat [resource]",
+	Use:   "stat [adapterkind]",
 	Short: "Create a single statistic for a resource",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {

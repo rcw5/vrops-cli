@@ -33,17 +33,17 @@ type FakeVRopsClient struct {
 		result1 []string
 		result2 error
 	}
-	ResourcesForAdapterKindStub        func(string) ([]models.Resource, error)
+	ResourcesForAdapterKindStub        func(string) (models.Resources, error)
 	resourcesForAdapterKindMutex       sync.RWMutex
 	resourcesForAdapterKindArgsForCall []struct {
 		arg1 string
 	}
 	resourcesForAdapterKindReturns struct {
-		result1 []models.Resource
+		result1 models.Resources
 		result2 error
 	}
 	resourcesForAdapterKindReturnsOnCall map[int]struct {
-		result1 []models.Resource
+		result1 models.Resources
 		result2 error
 	}
 	CreateStatsStub        func(string, []models.Stat) error
@@ -167,7 +167,7 @@ func (fake *FakeVRopsClient) ResourceKindsReturnsOnCall(i int, result1 []string,
 	}{result1, result2}
 }
 
-func (fake *FakeVRopsClient) ResourcesForAdapterKind(arg1 string) ([]models.Resource, error) {
+func (fake *FakeVRopsClient) ResourcesForAdapterKind(arg1 string) (models.Resources, error) {
 	fake.resourcesForAdapterKindMutex.Lock()
 	ret, specificReturn := fake.resourcesForAdapterKindReturnsOnCall[len(fake.resourcesForAdapterKindArgsForCall)]
 	fake.resourcesForAdapterKindArgsForCall = append(fake.resourcesForAdapterKindArgsForCall, struct {
@@ -196,24 +196,24 @@ func (fake *FakeVRopsClient) ResourcesForAdapterKindArgsForCall(i int) string {
 	return fake.resourcesForAdapterKindArgsForCall[i].arg1
 }
 
-func (fake *FakeVRopsClient) ResourcesForAdapterKindReturns(result1 []models.Resource, result2 error) {
+func (fake *FakeVRopsClient) ResourcesForAdapterKindReturns(result1 models.Resources, result2 error) {
 	fake.ResourcesForAdapterKindStub = nil
 	fake.resourcesForAdapterKindReturns = struct {
-		result1 []models.Resource
+		result1 models.Resources
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeVRopsClient) ResourcesForAdapterKindReturnsOnCall(i int, result1 []models.Resource, result2 error) {
+func (fake *FakeVRopsClient) ResourcesForAdapterKindReturnsOnCall(i int, result1 models.Resources, result2 error) {
 	fake.ResourcesForAdapterKindStub = nil
 	if fake.resourcesForAdapterKindReturnsOnCall == nil {
 		fake.resourcesForAdapterKindReturnsOnCall = make(map[int]struct {
-			result1 []models.Resource
+			result1 models.Resources
 			result2 error
 		})
 	}
 	fake.resourcesForAdapterKindReturnsOnCall[i] = struct {
-		result1 []models.Resource
+		result1 models.Resources
 		result2 error
 	}{result1, result2}
 }

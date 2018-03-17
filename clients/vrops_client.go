@@ -17,7 +17,7 @@ import (
 type VRopsClientIntf interface {
 	AdapterKinds() ([]models.AdapterKind, error)
 	ResourceKinds(string) ([]string, error)
-	ResourcesForAdapterKind(string) ([]models.Resource, error)
+	ResourcesForAdapterKind(string) (models.Resources, error)
 	CreateStats(string, []models.Stat) error
 	CreateResource(models.Resource) error
 }
@@ -74,24 +74,24 @@ func (c VRopsClient) CreateStats(resource string, stats []models.Stat) error {
 	return err
 }
 
-func (c VRopsClient) ResourcesForAdapterKind(adapterKind string) ([]models.Resource, error) {
+func (c VRopsClient) ResourcesForAdapterKind(adapterKind string) (models.Resources, error) {
 	request, err := http.NewRequest("GET", c.buildUrl(fmt.Sprintf("api/adapterkinds/%s/resources", adapterKind)), nil)
 	if err != nil {
 		return nil, err
 	}
 	response, err := c.do(request)
 	if err != nil {
-		return []models.Resource{}, err
+		return models.Resources{}, err
 	}
 	var data struct {
-		PageInfo     models.PageInfo   `json:"pageInfo"`
-		ResourceList []models.Resource `json:"resourceList"`
+		PageInfo     models.PageInfo  `json:"pageInfo"`
+		ResourceList models.Resources `json:"resourceList"`
 	}
 	if err := json.Unmarshal(response, &data); err != nil {
-		return []models.Resource{}, err
+		return models.Resources{}, err
 	}
 	if data.PageInfo.TotalCount > data.PageInfo.PageSize {
-		return []models.Resource{}, errors.New("No support for result pagination yet, mate")
+		return models.Resources{}, errors.New("No support for result pagination yet, mate")
 	}
 	return data.ResourceList, nil
 }
