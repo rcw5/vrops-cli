@@ -8,7 +8,7 @@ import (
 
 //go:generate counterfeiter -o ../fakes/FakePresenter.go --fake-name FakePresenter . Presenter
 type Presenter interface {
-	PresentAdapterKinds([]models.AdapterKind)
+	PresentAdapterKinds(models.AdapterKinds)
 	PresentResourceKinds([]string)
 	PresentResources(models.Resources)
 }

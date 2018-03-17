@@ -120,6 +120,86 @@ var _ = Describe("VRops Client", func() {
 		})
 	})
 
+	Context("#FindResource", func() {
+		var returnedAdapterKinds []models.AdapterKind
+		var returnedResources models.Resources
+		var returnedPageInfo models.PageInfo
+		var adapterKindsStatusCode int
+		var resourcesStatusCode int
+
+		BeforeEach(func() {
+			adapterKindsStatusCode = http.StatusOK
+			resourcesStatusCode = http.StatusOK
+			returnedAdapterKinds = fakes.FakeAdapterKinds
+			adapterKindData := struct {
+				Adapters *[]models.AdapterKind `json:"adapter-kind"`
+			}{
+				Adapters: &returnedAdapterKinds,
+			}
+			returnedResources = fakes.FakeResources
+			returnedPageInfo = models.PageInfo{
+				TotalCount: 1,
+				PageSize:   1000,
+			}
+			resourceData := struct {
+				ResourceList *models.Resources `json:"resourceList"`
+				PageInfo     *models.PageInfo  `json:"PageInfo"`
+			}{
+				ResourceList: &returnedResources,
+				PageInfo:     &returnedPageInfo,
+			}
+
+			server.AppendHandlers(
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("GET", "/suite-api/api/adapterkinds"),
+					ghttp.VerifyBasicAuth("hello", "world"),
+					ghttp.RespondWithJSONEncodedPtr(&adapterKindsStatusCode, &adapterKindData),
+				),
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("GET", "/suite-api/api/adapterkinds/my-adapterkind/resources"),
+					ghttp.VerifyBasicAuth("hello", "world"),
+					ghttp.RespondWithJSONEncodedPtr(&resourcesStatusCode, &resourceData),
+				),
+			)
+		})
+		It("Returns the resource when found", func() {
+			resource, err := client.FindResource("my-adapterkind", "my-resource")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(resource.Identifier).To(Equal("an-identifier"))
+		})
+
+		Context("When the adapterkind cannot be found", func() {
+			It("Returns an error", func() {
+				_, err := client.FindResource("invalid-adapterkind", "my-resource")
+				Expect(err).To(MatchError("Cannot find adapterkind: invalid-adapterkind"))
+			})
+		})
+		Context("When the adapterkind lookup fails", func() {
+			BeforeEach(func() {
+				adapterKindsStatusCode = http.StatusBadRequest
+			})
+			It("Returns an error", func() {
+				_, err := client.FindResource("invalid-adapterkind", "my-resource")
+				Expect(err).To(MatchError("Error retrieving adapterkinds: Request failed: 400"))
+			})
+		})
+		Context("When the resource cannot be found", func() {
+			It("Returns an error", func() {
+				_, err := client.FindResource("my-adapterkind", "invalid-resource")
+				Expect(err).To(MatchError("Cannot find resource: invalid-resource"))
+			})
+		})
+		Context("When the resource lookup fails", func() {
+			BeforeEach(func() {
+				resourcesStatusCode = http.StatusBadRequest
+			})
+			It("Returns an error", func() {
+				_, err := client.FindResource("my-adapterkind", "invalid-resource")
+				Expect(err).To(MatchError("Error retrieving resources: Request failed: 400"))
+			})
+		})
+	})
+
 	Context("#ResourcesForAdapterKind", func() {
 		var returnedResources models.Resources
 		var returnedPageInfo models.PageInfo
@@ -184,14 +264,14 @@ var _ = Describe("VRops Client", func() {
 	})
 
 	Context("#AdapterKinds", func() {
-		var returnedAdapterKinds []models.AdapterKind
+		var returnedAdapterKinds models.AdapterKinds
 		var statusCode int
 
 		BeforeEach(func() {
 			statusCode = http.StatusOK
 			returnedAdapterKinds = fakes.FakeAdapterKinds
 			data := struct {
-				Adapters *[]models.AdapterKind `json:"adapter-kind"`
+				Adapters *models.AdapterKinds `json:"adapter-kind"`
 			}{
 				Adapters: &returnedAdapterKinds,
 			}

@@ -15,9 +15,10 @@ import (
 
 //go:generate counterfeiter -o ../fakes/FakeVRopsClient.go --fake-name FakeVRopsClient . VRopsClientIntf
 type VRopsClientIntf interface {
-	AdapterKinds() ([]models.AdapterKind, error)
+	AdapterKinds() (models.AdapterKinds, error)
 	ResourceKinds(string) ([]string, error)
 	ResourcesForAdapterKind(string) (models.Resources, error)
+	FindResource(string, string) (models.Resource, error)
 	CreateStats(string, []models.Stat) error
 	CreateResource(models.Resource) error
 }
@@ -36,6 +37,29 @@ func NewVROpsClient(url, username, password string, verbose bool) VRopsClient {
 		password: password,
 		verbose:  verbose,
 	}
+}
+
+func (c VRopsClient) FindResource(adapterKind, resourceName string) (models.Resource, error) {
+	adapterKinds, err := c.AdapterKinds()
+	if err != nil {
+		return models.Resource{}, fmt.Errorf("Error retrieving adapterkinds: %s", err)
+	}
+
+	_, err = adapterKinds.FindAdapterKind(adapterKind)
+	if err != nil {
+		return models.Resource{}, err
+	}
+
+	resources, err := c.ResourcesForAdapterKind(adapterKind)
+	if err != nil {
+		return models.Resource{}, fmt.Errorf("Error retrieving resources: %s", err)
+	}
+
+	resource, err := resources.FindResource(resourceName)
+	if err != nil {
+		return models.Resource{}, err
+	}
+	return resource, nil
 }
 
 func (c VRopsClient) CreateResource(resource models.Resource) error {
@@ -96,7 +120,7 @@ func (c VRopsClient) ResourcesForAdapterKind(adapterKind string) (models.Resourc
 	return data.ResourceList, nil
 }
 
-func (c VRopsClient) AdapterKinds() ([]models.AdapterKind, error) {
+func (c VRopsClient) AdapterKinds() (models.AdapterKinds, error) {
 	request, err := http.NewRequest("GET", c.buildUrl("api/adapterkinds"), nil)
 	if err != nil {
 		return nil, err

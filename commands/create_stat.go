@@ -15,11 +15,11 @@ var (
 	value             float64
 )
 var createStatCmd = &cobra.Command{
-	Use:   "stat [adapterkind]",
+	Use:   "stat [adapterkind] [resource]",
 	Short: "Create a single statistic for a resource",
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		cmdErr = CreateStat(args[0], statKey, statTime, value, client)
+		cmdErr = CreateStat(args[0], args[1], statKey, statTime, value, client)
 	},
 }
 
@@ -32,7 +32,11 @@ func init() {
 	createCmd.AddCommand(createStatCmd)
 }
 
-func CreateStat(resource, statKey, statTime string, value float64, client clients.VRopsClientIntf) error {
+func CreateStat(adapterKind, resourceName, statKey, statTime string, value float64, client clients.VRopsClientIntf) error {
+	resource, err := client.FindResource(adapterKind, resourceName)
+	if err != nil {
+		return err
+	}
 	var timestamp int64
 	if statTime == "" {
 		timestamp = time.Now().UnixNano() / int64(time.Millisecond)
@@ -52,7 +56,7 @@ func CreateStat(resource, statKey, statTime string, value float64, client client
 		StatKey:    statKey,
 	}
 
-	err := client.CreateStats(resource, []models.Stat{stats})
+	err = client.CreateStats(resource.Identifier, []models.Stat{stats})
 	if err != nil {
 		return err
 	}

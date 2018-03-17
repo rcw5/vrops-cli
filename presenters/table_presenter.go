@@ -11,7 +11,7 @@ type TablePresenter struct {
 	Buffer io.Writer
 }
 
-func (t TablePresenter) PresentAdapterKinds(adapterKinds []models.AdapterKind) {
+func (t TablePresenter) PresentAdapterKinds(adapterKinds models.AdapterKinds) {
 	table := tablewriter.NewWriter(t.Buffer)
 	table.SetHeader([]string{"Key", "Name", "Description", "AdapterKindType"})
 	for _, adapter := range adapterKinds {

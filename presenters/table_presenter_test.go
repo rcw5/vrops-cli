@@ -36,12 +36,12 @@ var _ = Describe("TablePresenter", func() {
 	Context("#PresentAdapterKinds", func() {
 		It("Returns table encoded output", func() {
 			presenter.PresentAdapterKinds(fakes.FakeAdapterKinds)
-			Expect(buffer.String()).To(Equal(`+---------------+------------+----------------------------+-----------------+
-|      KEY      |    NAME    |        DESCRIPTION         | ADAPTERKINDTYPE |
-+---------------+------------+----------------------------+-----------------+
-| Adapter Key   | An Adapter | Nice long description here | Type            |
-| Adapter Key 2 | An Adapter | Nice long description here | Type            |
-+---------------+------------+----------------------------+-----------------+
+			Expect(buffer.String()).To(Equal(`+---------------+------------------+----------------------------+-----------------+
+|      KEY      |       NAME       |        DESCRIPTION         | ADAPTERKINDTYPE |
++---------------+------------------+----------------------------+-----------------+
+| Adapter Key   | my-adapterkind   | Nice long description here | Type            |
+| Adapter Key 2 | my-adapterkind-2 | Nice long description here | Type            |
++---------------+------------------+----------------------------+-----------------+
 `))
 		})
 	})

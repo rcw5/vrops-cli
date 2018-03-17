@@ -24,4 +24,20 @@ var _ = Describe("Models", func() {
 			Expect(err).To(MatchError("Cannot find resource: another-resource"))
 		})
 	})
+
+	Context("#AdapterKinds.FindAdapterKind", func() {
+		var adapterkinds AdapterKinds
+		JustBeforeEach(func() {
+			adapterkinds = fakes.FakeAdapterKinds
+		})
+		It("Returns the resource if it exists", func() {
+			adapterkind, err := adapterkinds.FindAdapterKind("my-adapterkind")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(adapterkind.Name).To(Equal("my-adapterkind"))
+		})
+		It("Returns an error if it does not exist", func() {
+			_, err := adapterkinds.FindAdapterKind("another-adapterkind")
+			Expect(err).To(MatchError("Cannot find adapterkind: another-adapterkind"))
+		})
+	})
 })

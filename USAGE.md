@@ -88,7 +88,7 @@ See [samples/stats.json](samples/stats.json) for a sample.
 Create a single statistic for a resource
 
 Usage:
-  vrops-cli create stat [resource] [flags]
+  vrops-cli create stat [adapterkind] [resource] [flags]
 
 Flags:
   -h, --help              help for stat
@@ -106,7 +106,7 @@ Global Flags:
 Example:
 
 ```
-vrops-cli create stat b169d60c-8252-4bf6-8434-3c9ecb313672 --stat-key "cpu|foobar" --value 75 --trace
+vrops-cli create stat my-adapterkind my-resource --stat-key "cpu|foobar" --value 75 --trace
 ```
 
 ### `create resource`

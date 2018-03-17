@@ -9,15 +9,15 @@ import (
 )
 
 type FakeVRopsClient struct {
-	AdapterKindsStub        func() ([]models.AdapterKind, error)
+	AdapterKindsStub        func() (models.AdapterKinds, error)
 	adapterKindsMutex       sync.RWMutex
 	adapterKindsArgsForCall []struct{}
 	adapterKindsReturns     struct {
-		result1 []models.AdapterKind
+		result1 models.AdapterKinds
 		result2 error
 	}
 	adapterKindsReturnsOnCall map[int]struct {
-		result1 []models.AdapterKind
+		result1 models.AdapterKinds
 		result2 error
 	}
 	ResourceKindsStub        func(string) ([]string, error)
@@ -44,6 +44,20 @@ type FakeVRopsClient struct {
 	}
 	resourcesForAdapterKindReturnsOnCall map[int]struct {
 		result1 models.Resources
+		result2 error
+	}
+	FindResourceStub        func(string, string) (models.Resource, error)
+	findResourceMutex       sync.RWMutex
+	findResourceArgsForCall []struct {
+		arg1 string
+		arg2 string
+	}
+	findResourceReturns struct {
+		result1 models.Resource
+		result2 error
+	}
+	findResourceReturnsOnCall map[int]struct {
+		result1 models.Resource
 		result2 error
 	}
 	CreateStatsStub        func(string, []models.Stat) error
@@ -73,7 +87,7 @@ type FakeVRopsClient struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeVRopsClient) AdapterKinds() ([]models.AdapterKind, error) {
+func (fake *FakeVRopsClient) AdapterKinds() (models.AdapterKinds, error) {
 	fake.adapterKindsMutex.Lock()
 	ret, specificReturn := fake.adapterKindsReturnsOnCall[len(fake.adapterKindsArgsForCall)]
 	fake.adapterKindsArgsForCall = append(fake.adapterKindsArgsForCall, struct{}{})
@@ -94,24 +108,24 @@ func (fake *FakeVRopsClient) AdapterKindsCallCount() int {
 	return len(fake.adapterKindsArgsForCall)
 }
 
-func (fake *FakeVRopsClient) AdapterKindsReturns(result1 []models.AdapterKind, result2 error) {
+func (fake *FakeVRopsClient) AdapterKindsReturns(result1 models.AdapterKinds, result2 error) {
 	fake.AdapterKindsStub = nil
 	fake.adapterKindsReturns = struct {
-		result1 []models.AdapterKind
+		result1 models.AdapterKinds
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeVRopsClient) AdapterKindsReturnsOnCall(i int, result1 []models.AdapterKind, result2 error) {
+func (fake *FakeVRopsClient) AdapterKindsReturnsOnCall(i int, result1 models.AdapterKinds, result2 error) {
 	fake.AdapterKindsStub = nil
 	if fake.adapterKindsReturnsOnCall == nil {
 		fake.adapterKindsReturnsOnCall = make(map[int]struct {
-			result1 []models.AdapterKind
+			result1 models.AdapterKinds
 			result2 error
 		})
 	}
 	fake.adapterKindsReturnsOnCall[i] = struct {
-		result1 []models.AdapterKind
+		result1 models.AdapterKinds
 		result2 error
 	}{result1, result2}
 }
@@ -214,6 +228,58 @@ func (fake *FakeVRopsClient) ResourcesForAdapterKindReturnsOnCall(i int, result1
 	}
 	fake.resourcesForAdapterKindReturnsOnCall[i] = struct {
 		result1 models.Resources
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeVRopsClient) FindResource(arg1 string, arg2 string) (models.Resource, error) {
+	fake.findResourceMutex.Lock()
+	ret, specificReturn := fake.findResourceReturnsOnCall[len(fake.findResourceArgsForCall)]
+	fake.findResourceArgsForCall = append(fake.findResourceArgsForCall, struct {
+		arg1 string
+		arg2 string
+	}{arg1, arg2})
+	fake.recordInvocation("FindResource", []interface{}{arg1, arg2})
+	fake.findResourceMutex.Unlock()
+	if fake.FindResourceStub != nil {
+		return fake.FindResourceStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.findResourceReturns.result1, fake.findResourceReturns.result2
+}
+
+func (fake *FakeVRopsClient) FindResourceCallCount() int {
+	fake.findResourceMutex.RLock()
+	defer fake.findResourceMutex.RUnlock()
+	return len(fake.findResourceArgsForCall)
+}
+
+func (fake *FakeVRopsClient) FindResourceArgsForCall(i int) (string, string) {
+	fake.findResourceMutex.RLock()
+	defer fake.findResourceMutex.RUnlock()
+	return fake.findResourceArgsForCall[i].arg1, fake.findResourceArgsForCall[i].arg2
+}
+
+func (fake *FakeVRopsClient) FindResourceReturns(result1 models.Resource, result2 error) {
+	fake.FindResourceStub = nil
+	fake.findResourceReturns = struct {
+		result1 models.Resource
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeVRopsClient) FindResourceReturnsOnCall(i int, result1 models.Resource, result2 error) {
+	fake.FindResourceStub = nil
+	if fake.findResourceReturnsOnCall == nil {
+		fake.findResourceReturnsOnCall = make(map[int]struct {
+			result1 models.Resource
+			result2 error
+		})
+	}
+	fake.findResourceReturnsOnCall[i] = struct {
+		result1 models.Resource
 		result2 error
 	}{result1, result2}
 }
@@ -329,6 +395,8 @@ func (fake *FakeVRopsClient) Invocations() map[string][][]interface{} {
 	defer fake.resourceKindsMutex.RUnlock()
 	fake.resourcesForAdapterKindMutex.RLock()
 	defer fake.resourcesForAdapterKindMutex.RUnlock()
+	fake.findResourceMutex.RLock()
+	defer fake.findResourceMutex.RUnlock()
 	fake.createStatsMutex.RLock()
 	defer fake.createStatsMutex.RUnlock()
 	fake.createResourceMutex.RLock()

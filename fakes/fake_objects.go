@@ -25,18 +25,18 @@ var FakeResources = models.Resources{
 	},
 }
 
-var FakeAdapterKinds = []models.AdapterKind{
+var FakeAdapterKinds = models.AdapterKinds{
 	models.AdapterKind{
 		Key:             "Adapter Key",
 		Description:     "Nice long description here",
 		AdapterKindType: "Type",
-		Name:            "An Adapter",
+		Name:            "my-adapterkind",
 	},
 	models.AdapterKind{
 		Key:             "Adapter Key 2",
 		Description:     "Nice long description here",
 		AdapterKindType: "Type",
-		Name:            "An Adapter",
+		Name:            "my-adapterkind-2",
 	},
 }
 

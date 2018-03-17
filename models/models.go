@@ -8,6 +8,17 @@ type PageInfo struct {
 	PageSize   int `json:"pageSize"`
 }
 
+type AdapterKinds []AdapterKind
+
+func (r AdapterKinds) FindAdapterKind(name string) (AdapterKind, error) {
+	for _, v := range r {
+		if v.Name == name {
+			return v, nil
+		}
+	}
+	return AdapterKind{}, fmt.Errorf("Cannot find adapterkind: %s", name)
+}
+
 type AdapterKind struct {
 	Key             string   `json:"key"`
 	Name            string   `json:"name"`

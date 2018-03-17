@@ -9,10 +9,10 @@ import (
 )
 
 type FakePresenter struct {
-	PresentAdapterKindsStub        func([]models.AdapterKind)
+	PresentAdapterKindsStub        func(models.AdapterKinds)
 	presentAdapterKindsMutex       sync.RWMutex
 	presentAdapterKindsArgsForCall []struct {
-		arg1 []models.AdapterKind
+		arg1 models.AdapterKinds
 	}
 	PresentResourceKindsStub        func([]string)
 	presentResourceKindsMutex       sync.RWMutex
@@ -28,17 +28,12 @@ type FakePresenter struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakePresenter) PresentAdapterKinds(arg1 []models.AdapterKind) {
-	var arg1Copy []models.AdapterKind
-	if arg1 != nil {
-		arg1Copy = make([]models.AdapterKind, len(arg1))
-		copy(arg1Copy, arg1)
-	}
+func (fake *FakePresenter) PresentAdapterKinds(arg1 models.AdapterKinds) {
 	fake.presentAdapterKindsMutex.Lock()
 	fake.presentAdapterKindsArgsForCall = append(fake.presentAdapterKindsArgsForCall, struct {
-		arg1 []models.AdapterKind
-	}{arg1Copy})
-	fake.recordInvocation("PresentAdapterKinds", []interface{}{arg1Copy})
+		arg1 models.AdapterKinds
+	}{arg1})
+	fake.recordInvocation("PresentAdapterKinds", []interface{}{arg1})
 	fake.presentAdapterKindsMutex.Unlock()
 	if fake.PresentAdapterKindsStub != nil {
 		fake.PresentAdapterKindsStub(arg1)
@@ -51,7 +46,7 @@ func (fake *FakePresenter) PresentAdapterKindsCallCount() int {
 	return len(fake.presentAdapterKindsArgsForCall)
 }
 
-func (fake *FakePresenter) PresentAdapterKindsArgsForCall(i int) []models.AdapterKind {
+func (fake *FakePresenter) PresentAdapterKindsArgsForCall(i int) models.AdapterKinds {
 	fake.presentAdapterKindsMutex.RLock()
 	defer fake.presentAdapterKindsMutex.RUnlock()
 	return fake.presentAdapterKindsArgsForCall[i].arg1

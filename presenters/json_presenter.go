@@ -11,7 +11,7 @@ type JSONPresenter struct {
 	Buffer io.Writer
 }
 
-func (j JSONPresenter) PresentAdapterKinds(adapterKinds []models.AdapterKind) {
+func (j JSONPresenter) PresentAdapterKinds(adapterKinds models.AdapterKinds) {
 	j.jsonify(adapterKinds)
 }
 
