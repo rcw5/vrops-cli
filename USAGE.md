@@ -50,7 +50,7 @@ Use "vrops-cli create [command] --help" for more information about a command.
 Create stats for a resource
 
 Usage:
-  vrops-cli create stats [resource] [flags]
+  vrops-cli create stats [adapterkind] [resource] [flags]
 
 Flags:
   -h, --help               help for stats
@@ -81,6 +81,12 @@ Example `--statsjson`:
 (Note: timestamps are in milliseconds)
 
 See [samples/stats.json](samples/stats.json) for a sample.
+
+Example:
+
+```
+vrops-cli create stats my-adapterkind my-resource --statsjson "$(cat samples/stats.json)"
+```
 
 ### `create stat`
 

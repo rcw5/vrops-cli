@@ -21,6 +21,7 @@ var _ = Describe("CreateStats", func() {
 			statsByteArr, err := json.Marshal(fakes.FakeStats)
 			Expect(err).NotTo(HaveOccurred())
 			statsJson = string(statsByteArr)
+			fakeClient.FindResourceReturns(fakes.FakeResources[0], nil)
 		})
 
 		Context("When the command succeeds", func() {
@@ -29,17 +30,17 @@ var _ = Describe("CreateStats", func() {
 			})
 
 			It("Does not return an error", func() {
-				err := commands.CreateStats("a-resource", statsJson, &fakeClient)
+				err := commands.CreateStats("my-adapterkind", "a-resource", statsJson, &fakeClient)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(fakeClient.CreateStatsCallCount()).To(Equal(1))
 				actualResource, actualStats := fakeClient.CreateStatsArgsForCall(0)
-				Expect(actualResource).To(Equal("a-resource"))
+				Expect(actualResource).To(Equal("an-identifier"))
 				Expect(actualStats).To(Equal(fakes.FakeStats))
 			})
 		})
 		Context("When the provided JSON does not parse correctly", func() {
 			It("Returns an error", func() {
-				err := commands.CreateStats("a-resource", "{}", &fakeClient)
+				err := commands.CreateStats("my-adapterkind", "a-resource", "{}", &fakeClient)
 				Expect(err).To(MatchError("json: cannot unmarshal object into Go value of type []models.Stat"))
 			})
 		})
@@ -47,11 +48,11 @@ var _ = Describe("CreateStats", func() {
 			It("Returns the error back to the caller", func() {
 				fakeClient.CreateStatsReturns(errors.New("An error"))
 
-				err := commands.CreateStats("a-resource", statsJson, &fakeClient)
+				err := commands.CreateStats("my-adapterkind", "a-resource", statsJson, &fakeClient)
 				Expect(err).To(MatchError("An error"))
 				Expect(fakeClient.CreateStatsCallCount()).To(Equal(1))
 				actualResource, actualStats := fakeClient.CreateStatsArgsForCall(0)
-				Expect(actualResource).To(Equal("a-resource"))
+				Expect(actualResource).To(Equal("an-identifier"))
 				Expect(actualStats).To(Equal(fakes.FakeStats))
 			})
 		})

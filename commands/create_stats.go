@@ -9,11 +9,11 @@ import (
 )
 
 var createStatsCmd = &cobra.Command{
-	Use:   "stats [resource]",
+	Use:   "stats [adapterkind] [resource]",
 	Short: "Create stats for a resource",
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		cmdErr = CreateStats(args[0], cmd.Flag("statsjson").Value.String(), client)
+		cmdErr = CreateStats(args[0], args[1], cmd.Flag("statsjson").Value.String(), client)
 	},
 }
 
@@ -23,13 +23,17 @@ func init() {
 	createCmd.AddCommand(createStatsCmd)
 }
 
-func CreateStats(resource string, statsJson string, client clients.VRopsClientIntf) error {
-	stats := []models.Stat{}
-	err := json.Unmarshal([]byte(statsJson), &stats)
+func CreateStats(adapterKind, resourceName, statsJson string, client clients.VRopsClientIntf) error {
+	resource, err := client.FindResource(adapterKind, resourceName)
 	if err != nil {
 		return err
 	}
-	err = client.CreateStats(resource, stats)
+	stats := []models.Stat{}
+	err = json.Unmarshal([]byte(statsJson), &stats)
+	if err != nil {
+		return err
+	}
+	err = client.CreateStats(resource.Identifier, stats)
 	if err != nil {
 		return err
 	}
