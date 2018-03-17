@@ -40,7 +40,7 @@ var FakeAdapterKinds = models.AdapterKinds{
 	},
 }
 
-var FakeStats = []models.Stat{
+var FakeStats = models.Stats{
 	models.Stat{
 		StatKey:    "a|stat|key",
 		Timestamps: []int64{1620688924000, 1720688924000, 1820688924000},

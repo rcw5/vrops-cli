@@ -16,11 +16,11 @@ var _ = Describe("CreateStat", func() {
 
 	Context("#CreateStat", func() {
 		var fakeClient fakes.FakeVRopsClient
-		var expectedStat []models.Stat
+		var expectedStat models.Stats
 
 		BeforeEach(func() {
 			fakeClient = fakes.FakeVRopsClient{}
-			expectedStat = []models.Stat{
+			expectedStat = models.Stats{
 				models.Stat{
 					StatKey:    "key1|key2",
 					Data:       []float64{75},

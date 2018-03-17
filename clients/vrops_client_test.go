@@ -45,7 +45,7 @@ var _ = Describe("VRops Client", func() {
 	Context("#CreateStats", func() {
 		It("POSTs numeric stats to the endpoint", func() {
 			statsForvRops := struct {
-				Stats []models.Stat `json:"stat-content"`
+				Stats models.Stats `json:"stat-content"`
 			}{
 				fakes.FakeStats,
 			}
@@ -62,7 +62,7 @@ var _ = Describe("VRops Client", func() {
 		})
 	})
 
-	Context("ResourceKinds", func() {
+	Context("#ResourceKinds", func() {
 		var returnedAdapter models.AdapterKind
 		var statusCode int
 
@@ -71,6 +71,7 @@ var _ = Describe("VRops Client", func() {
 				ResourceKinds: []string{"Resource1", "Resource2", "Resource3"},
 			}
 
+			server.Reset()
 			server.AppendHandlers(
 				ghttp.CombineHandlers(
 					ghttp.VerifyRequest("GET", "/suite-api/api/adapterkinds/adapter"),
@@ -87,6 +88,23 @@ var _ = Describe("VRops Client", func() {
 				adapters, err := client.ResourceKinds("adapter")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(adapters).To(Equal(returnedAdapter.ResourceKinds))
+			})
+		})
+
+		Context("When the response contains invalid JSON", func() {
+			BeforeEach(func() {
+				server.Reset()
+				server.AppendHandlers(
+					ghttp.CombineHandlers(
+						ghttp.VerifyRequest("GET", "/suite-api/api/adapterkinds/adapter"),
+						ghttp.VerifyBasicAuth("hello", "world"),
+						ghttp.RespondWith(http.StatusOK, "not json"),
+					),
+				)
+			})
+			It("Returns an error", func() {
+				_, err := client.ResourceKinds("adapter")
+				Expect(err).To(MatchError(ContainSubstring("Cannot parse response:")))
 			})
 		})
 
@@ -115,72 +133,75 @@ var _ = Describe("VRops Client", func() {
 			})
 			It("returns an error", func() {
 				_, err := client.ResourceKinds("adapter")
-				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError(ContainSubstring("/suite-api/api/adapterkinds/adapter: EOF")))
 			})
 		})
 	})
 
-	Context("#FindResource", func() {
-		var returnedAdapterKinds []models.AdapterKind
-		var returnedResources models.Resources
-		var returnedPageInfo models.PageInfo
-		var adapterKindsStatusCode int
-		var resourcesStatusCode int
+	ConfigureForAdapterAndResources := func(adapterKindsStatusCode, resourcesStatusCode *int) {
+		adapterKindData := struct {
+			Adapters *models.AdapterKinds `json:"adapter-kind"`
+		}{
+			Adapters: &fakes.FakeAdapterKinds,
+		}
+		returnedPageInfo := models.PageInfo{
+			TotalCount: 1,
+			PageSize:   1000,
+		}
+		resourceData := struct {
+			ResourceList *models.Resources `json:"resourceList"`
+			PageInfo     *models.PageInfo  `json:"PageInfo"`
+		}{
+			ResourceList: &fakes.FakeResources,
+			PageInfo:     &returnedPageInfo,
+		}
+		server.AppendHandlers(
+			ghttp.CombineHandlers(
+				ghttp.VerifyRequest("GET", "/suite-api/api/adapterkinds"),
+				ghttp.VerifyBasicAuth("hello", "world"),
+				ghttp.RespondWithJSONEncodedPtr(adapterKindsStatusCode, &adapterKindData),
+			),
+			ghttp.CombineHandlers(
+				ghttp.VerifyRequest("GET", "/suite-api/api/adapterkinds/my-adapterkind/resources"),
+				ghttp.VerifyBasicAuth("hello", "world"),
+				ghttp.RespondWithJSONEncodedPtr(resourcesStatusCode, &resourceData),
+			),
+		)
 
-		BeforeEach(func() {
-			adapterKindsStatusCode = http.StatusOK
-			resourcesStatusCode = http.StatusOK
-			returnedAdapterKinds = fakes.FakeAdapterKinds
-			adapterKindData := struct {
-				Adapters *[]models.AdapterKind `json:"adapter-kind"`
-			}{
-				Adapters: &returnedAdapterKinds,
-			}
-			returnedResources = fakes.FakeResources
-			returnedPageInfo = models.PageInfo{
-				TotalCount: 1,
-				PageSize:   1000,
-			}
-			resourceData := struct {
-				ResourceList *models.Resources `json:"resourceList"`
-				PageInfo     *models.PageInfo  `json:"PageInfo"`
-			}{
-				ResourceList: &returnedResources,
-				PageInfo:     &returnedPageInfo,
-			}
+	}
 
-			server.AppendHandlers(
-				ghttp.CombineHandlers(
-					ghttp.VerifyRequest("GET", "/suite-api/api/adapterkinds"),
-					ghttp.VerifyBasicAuth("hello", "world"),
-					ghttp.RespondWithJSONEncodedPtr(&adapterKindsStatusCode, &adapterKindData),
-				),
-				ghttp.CombineHandlers(
-					ghttp.VerifyRequest("GET", "/suite-api/api/adapterkinds/my-adapterkind/resources"),
-					ghttp.VerifyBasicAuth("hello", "world"),
-					ghttp.RespondWithJSONEncodedPtr(&resourcesStatusCode, &resourceData),
-				),
-			)
-		})
-		It("Returns the resource when found", func() {
-			resource, err := client.FindResource("my-adapterkind", "my-resource")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(resource.Identifier).To(Equal("an-identifier"))
-		})
-
+	ErrorsWhenAdapterKindOrResourceNotFound := func(adapterKindsStatusCode, resourcesStatusCode *int) {
 		Context("When the adapterkind cannot be found", func() {
 			It("Returns an error", func() {
 				_, err := client.FindResource("invalid-adapterkind", "my-resource")
 				Expect(err).To(MatchError("Cannot find adapterkind: invalid-adapterkind"))
 			})
 		})
-		Context("When the adapterkind lookup fails", func() {
+		Context("When the adapterkind request returns a 400", func() {
 			BeforeEach(func() {
-				adapterKindsStatusCode = http.StatusBadRequest
+				*adapterKindsStatusCode = http.StatusBadRequest
 			})
 			It("Returns an error", func() {
 				_, err := client.FindResource("invalid-adapterkind", "my-resource")
 				Expect(err).To(MatchError("Error retrieving adapterkinds: Request failed: 400"))
+			})
+		})
+		Context("When the adapterkind request fails altogether", func() {
+			BeforeEach(func() {
+				server.Reset()
+				server.AppendHandlers(
+					ghttp.CombineHandlers(
+						ghttp.VerifyRequest("GET", "/suite-api/api/adapterkinds"),
+						ghttp.VerifyBasicAuth("hello", "world"),
+						func(w http.ResponseWriter, r *http.Request) {
+							server.CloseClientConnections()
+						},
+					),
+				)
+			})
+			It("returns an error", func() {
+				_, err := client.GetStatsForResource("my-adapterkind", "my-resource")
+				Expect(err).To(MatchError(ContainSubstring("Error retrieving adapterkinds:")))
 			})
 		})
 		Context("When the resource cannot be found", func() {
@@ -189,13 +210,150 @@ var _ = Describe("VRops Client", func() {
 				Expect(err).To(MatchError("Cannot find resource: invalid-resource"))
 			})
 		})
-		Context("When the resource lookup fails", func() {
+		Context("When the resource lookup request returns a 400", func() {
 			BeforeEach(func() {
-				resourcesStatusCode = http.StatusBadRequest
+				*resourcesStatusCode = http.StatusBadRequest
 			})
 			It("Returns an error", func() {
 				_, err := client.FindResource("my-adapterkind", "invalid-resource")
 				Expect(err).To(MatchError("Error retrieving resources: Request failed: 400"))
+			})
+		})
+		Context("When the resource lookup request fails altogether", func() {
+			BeforeEach(func() {
+				server.Reset()
+				adapterKindData := struct {
+					Adapters *models.AdapterKinds `json:"adapter-kind"`
+				}{
+					Adapters: &fakes.FakeAdapterKinds,
+				}
+				server.AppendHandlers(
+					ghttp.CombineHandlers(
+						ghttp.VerifyRequest("GET", "/suite-api/api/adapterkinds"),
+						ghttp.VerifyBasicAuth("hello", "world"),
+						ghttp.RespondWithJSONEncodedPtr(adapterKindsStatusCode, &adapterKindData),
+					),
+					ghttp.CombineHandlers(
+						ghttp.VerifyRequest("GET", "/suite-api/api/adapterkinds/my-adapterkind/resources"),
+						ghttp.VerifyBasicAuth("hello", "world"),
+						func(w http.ResponseWriter, r *http.Request) {
+							server.CloseClientConnections()
+						},
+					),
+				)
+			})
+			It("returns an error", func() {
+				_, err := client.GetStatsForResource("my-adapterkind", "my-resource")
+				Expect(err).To(MatchError(ContainSubstring("Error retrieving resources:")))
+			})
+		})
+	}
+
+	Context("#FindResource", func() {
+		var adapterKindsStatusCode int
+		var resourcesStatusCode int
+
+		BeforeEach(func() {
+			adapterKindsStatusCode = http.StatusOK
+			resourcesStatusCode = http.StatusOK
+
+			server.Reset()
+			ConfigureForAdapterAndResources(&adapterKindsStatusCode, &resourcesStatusCode)
+
+		})
+		It("Returns the resource when found", func() {
+			resource, err := client.FindResource("my-adapterkind", "my-resource")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(resource.Identifier).To(Equal("an-identifier"))
+		})
+
+		ErrorsWhenAdapterKindOrResourceNotFound(&adapterKindsStatusCode, &resourcesStatusCode)
+
+	})
+
+	Context("#GetStatsForResource", func() {
+		var adapterKindsStatusCode int
+		var resourcesStatusCode int
+		var statsStatusCode int
+
+		BeforeEach(func() {
+			adapterKindsStatusCode = http.StatusOK
+			resourcesStatusCode = http.StatusOK
+			statsStatusCode = http.StatusOK
+			server.Reset()
+			ConfigureForAdapterAndResources(&adapterKindsStatusCode, &resourcesStatusCode)
+
+			stats := models.ListStatsResponse{
+				Values: []models.ListStatsResponseValues{
+					models.ListStatsResponseValues{
+						ResourceID: "resource-12345",
+						StatList: models.ListStatsResponseValuesStatList{
+							Stat: fakes.FakeStats,
+						},
+					},
+				},
+			}
+			server.AppendHandlers(
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("GET", "/suite-api/api/resources/an-identifier/stats"),
+					ghttp.VerifyBasicAuth("hello", "world"),
+					ghttp.RespondWithJSONEncodedPtr(&statsStatusCode, &stats),
+				),
+			)
+		})
+
+		ErrorsWhenAdapterKindOrResourceNotFound(&adapterKindsStatusCode, &resourcesStatusCode)
+
+		It("Returns the stats for the provided resource", func() {
+			stats, err := client.GetStatsForResource("my-adapterkind", "my-resource")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(stats).To(Equal(fakes.FakeStats))
+			Expect(server.ReceivedRequests()).To(HaveLen(3))
+		})
+
+		Context("When the stats lookup fails", func() {
+			BeforeEach(func() {
+				statsStatusCode = http.StatusNotFound
+			})
+			It("returns an error", func() {
+				_, err := client.GetStatsForResource("my-adapterkind", "my-resource")
+				Expect(err).To(MatchError("Request failed: 404"))
+			})
+		})
+
+		Context("When the stats lookup returns bad JSON", func() {
+			BeforeEach(func() {
+				server.Reset()
+				ConfigureForAdapterAndResources(&adapterKindsStatusCode, &resourcesStatusCode)
+				server.AppendHandlers(
+					ghttp.CombineHandlers(
+						ghttp.VerifyRequest("GET", "/suite-api/api/resources/an-identifier/stats"),
+						ghttp.RespondWith(http.StatusOK, "{bad_json}"),
+					),
+				)
+			})
+			It("returns an error", func() {
+				_, err := client.GetStatsForResource("my-adapterkind", "my-resource")
+				Expect(err).To(MatchError(ContainSubstring("Cannot parse response:")))
+			})
+		})
+
+		Context("When the stats request fails altogether", func() {
+			BeforeEach(func() {
+				server.Reset()
+				ConfigureForAdapterAndResources(&adapterKindsStatusCode, &resourcesStatusCode)
+				server.AppendHandlers(
+					ghttp.CombineHandlers(
+						ghttp.VerifyRequest("GET", "/suite-api/api/resources/an-identifier/stats"),
+						func(w http.ResponseWriter, r *http.Request) {
+							server.CloseClientConnections()
+						},
+					),
+				)
+			})
+			It("returns an error", func() {
+				_, err := client.GetStatsForResource("my-adapterkind", "my-resource")
+				Expect(err).To(HaveOccurred())
 			})
 		})
 	})

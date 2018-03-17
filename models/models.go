@@ -82,9 +82,28 @@ func (r Resources) FindResource(name string) (Resource, error) {
 	return Resource{}, fmt.Errorf("Cannot find resource: %s", name)
 }
 
+type IntervalUnit struct {
+	Quantifier int `json:"quantifier"`
+}
+
 type Stat struct {
-	StatKey    string    `json:"statKey"`
-	Timestamps []int64   `json:"timestamps"`
-	Data       []float64 `json:"data,omitempty"`
-	// } `json:"stat-content"`
+	StatKey      string       `json:"statKey"`
+	Timestamps   []int64      `json:"timestamps"`
+	Data         []float64    `json:"data,omitempty"`
+	IntervalUnit IntervalUnit `json:"intervalUnit,omitempty"`
+}
+
+type Stats []Stat
+
+type ListStatsResponse struct {
+	Values []ListStatsResponseValues `json:"values"`
+}
+
+type ListStatsResponseValues struct {
+	ResourceID string                          `json:"resourceId"`
+	StatList   ListStatsResponseValuesStatList `json:"stat-list"`
+}
+
+type ListStatsResponseValuesStatList struct {
+	Stat Stats `json:"stat"`
 }

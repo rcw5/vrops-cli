@@ -19,7 +19,8 @@ type VRopsClientIntf interface {
 	ResourceKinds(string) ([]string, error)
 	ResourcesForAdapterKind(string) (models.Resources, error)
 	FindResource(string, string) (models.Resource, error)
-	CreateStats(string, []models.Stat) error
+	CreateStats(string, models.Stats) error
+	GetStatsForResource(string, string) (models.Stats, error)
 	CreateResource(models.Resource) error
 }
 
@@ -37,6 +38,30 @@ func NewVROpsClient(url, username, password string, verbose bool) VRopsClient {
 		password: password,
 		verbose:  verbose,
 	}
+}
+
+func (c VRopsClient) GetStatsForResource(adapterKind, resourceName string) (models.Stats, error) {
+	resource, err := c.FindResource(adapterKind, resourceName)
+	if err != nil {
+		return models.Stats{}, err
+	}
+	request, err := http.NewRequest("GET", c.buildUrl(fmt.Sprintf("api/resources/%s/stats", resource.Identifier)), nil)
+	if err != nil {
+		return models.Stats{}, err
+	}
+
+	response, err := c.do(request)
+	if err != nil {
+		return models.Stats{}, err
+	}
+
+	data := models.ListStatsResponse{}
+	if err := json.Unmarshal(response, &data); err != nil {
+		return models.Stats{}, fmt.Errorf("Cannot parse response: %s", err)
+	}
+
+	return data.Values[0].StatList.Stat, nil
+
 }
 
 func (c VRopsClient) FindResource(adapterKind, resourceName string) (models.Resource, error) {
@@ -77,7 +102,7 @@ func (c VRopsClient) CreateResource(resource models.Resource) error {
 	return err
 
 }
-func (c VRopsClient) CreateStats(resource string, stats []models.Stat) error {
+func (c VRopsClient) CreateStats(resource string, stats models.Stats) error {
 	data := struct {
 		Stats []models.Stat `json:"stat-content"`
 	}{
@@ -152,7 +177,7 @@ func (c VRopsClient) ResourceKinds(adapterKind string) ([]string, error) {
 	}
 	var dat models.AdapterKind
 	if err := json.Unmarshal(response, &dat); err != nil {
-		panic(err)
+		return []string{}, fmt.Errorf("Cannot parse response: %s", err)
 	}
 	return dat.ResourceKinds, nil
 }
