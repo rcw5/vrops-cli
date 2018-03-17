@@ -59,9 +59,8 @@ type Resource struct {
 }
 
 type Stat struct {
-	StatKey    string   `json:"statKey"`
-	Timestamps []int64  `json:"timestamps"`
-	Data       []int    `json:"data,omitempty"`
-	Values     []string `json:"values,omitempty"`
+	StatKey    string    `json:"statKey"`
+	Timestamps []int64   `json:"timestamps"`
+	Data       []float64 `json:"data,omitempty"`
 	// } `json:"stat-content"`
 }

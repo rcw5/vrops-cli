@@ -82,6 +82,33 @@ Example `--statsjson`:
 
 See [samples/stats.json](samples/stats.json) for a sample.
 
+### `create stat`
+
+```
+Create a single statistic for a resource
+
+Usage:
+  vrops-cli create stat [resource] [flags]
+
+Flags:
+  -h, --help              help for stat
+  -s, --stat-key string   stat key for the stat (in format key|subkey)
+      --time string       time to use (if blank, current time is used). Can be a timestamp in ms or time in RFC3339 format
+  -v, --value float       Value of the statistic
+
+Global Flags:
+  -p, --password string   vROps password
+  -t, --target string     url to vROps instance
+      --trace             enable request tracing
+  -u, --username string   vROps username
+```
+
+Example:
+
+```
+vrops-cli create stat b169d60c-8252-4bf6-8434-3c9ecb313672 --stat-key "cpu|foobar" --value 75 --trace
+```
+
 ### `create resource`
 
 ```

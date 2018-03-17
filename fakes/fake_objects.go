@@ -44,11 +44,11 @@ var FakeStats = []models.Stat{
 	models.Stat{
 		StatKey:    "a|stat|key",
 		Timestamps: []int64{1620688924000, 1720688924000, 1820688924000},
-		Data:       []int{100, 0, 0},
+		Data:       []float64{100, 0, 0},
 	},
 	models.Stat{
 		StatKey:    "another|stat|key",
 		Timestamps: []int64{1620688924000, 1720688924000, 1820688924000},
-		Data:       []int{100, 90, 500},
+		Data:       []float64{100, 90, 500},
 	},
 }
