@@ -20,7 +20,7 @@ type VRopsClientIntf interface {
 	ResourcesForAdapterKind(string) (models.Resources, error)
 	FindResource(string, string) (models.Resource, error)
 	CreateStats(string, models.Stats) error
-	GetStatsForResource(string, string) (models.ListStatsResponseValuesStatListStats, error)
+	GetStatsForResource(string, string, string) (models.ListStatsResponseValuesStatListStats, error)
 	CreateResource(models.Resource) error
 }
 
@@ -40,7 +40,7 @@ func NewVROpsClient(url, username, password string, verbose bool) VRopsClient {
 	}
 }
 
-func (c VRopsClient) GetStatsForResource(adapterKind, resourceName string) (models.ListStatsResponseValuesStatListStats, error) {
+func (c VRopsClient) GetStatsForResource(adapterKind, resourceName, statKey string) (models.ListStatsResponseValuesStatListStats, error) {
 	resource, err := c.FindResource(adapterKind, resourceName)
 	if err != nil {
 		return models.ListStatsResponseValuesStatListStats{}, err

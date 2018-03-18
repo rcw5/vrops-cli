@@ -170,10 +170,10 @@ var _ = Describe("VRops Client", func() {
 
 	}
 
-	ErrorsWhenAdapterKindOrResourceNotFound := func(adapterKindsStatusCode, resourcesStatusCode *int) {
+	ErrorsWhenAdapterKindOrResourceNotFound := func(adapterKindsStatusCode, resourcesStatusCode *int, funcUnderTest func(string, string) error) {
 		Context("When the adapterkind cannot be found", func() {
 			It("Returns an error", func() {
-				_, err := client.FindResource("invalid-adapterkind", "my-resource")
+				err := funcUnderTest("invalid-adapterkind", "my-resource")
 				Expect(err).To(MatchError("Cannot find adapterkind: invalid-adapterkind"))
 			})
 		})
@@ -182,7 +182,7 @@ var _ = Describe("VRops Client", func() {
 				*adapterKindsStatusCode = http.StatusBadRequest
 			})
 			It("Returns an error", func() {
-				_, err := client.FindResource("invalid-adapterkind", "my-resource")
+				err := funcUnderTest("invalid-adapterkind", "my-resource")
 				Expect(err).To(MatchError("Error retrieving adapterkinds: Request failed: 400"))
 			})
 		})
@@ -200,13 +200,13 @@ var _ = Describe("VRops Client", func() {
 				)
 			})
 			It("returns an error", func() {
-				_, err := client.GetStatsForResource("my-adapterkind", "my-resource")
+				err := funcUnderTest("", "")
 				Expect(err).To(MatchError(ContainSubstring("Error retrieving adapterkinds:")))
 			})
 		})
 		Context("When the resource cannot be found", func() {
 			It("Returns an error", func() {
-				_, err := client.FindResource("my-adapterkind", "invalid-resource")
+				err := funcUnderTest("my-adapterkind", "invalid-resource")
 				Expect(err).To(MatchError("Cannot find resource: invalid-resource"))
 			})
 		})
@@ -215,7 +215,7 @@ var _ = Describe("VRops Client", func() {
 				*resourcesStatusCode = http.StatusBadRequest
 			})
 			It("Returns an error", func() {
-				_, err := client.FindResource("my-adapterkind", "invalid-resource")
+				err := funcUnderTest("my-adapterkind", "")
 				Expect(err).To(MatchError("Error retrieving resources: Request failed: 400"))
 			})
 		})
@@ -243,7 +243,7 @@ var _ = Describe("VRops Client", func() {
 				)
 			})
 			It("returns an error", func() {
-				_, err := client.GetStatsForResource("my-adapterkind", "my-resource")
+				err := funcUnderTest("my-adapterkind", "invalid-resource")
 				Expect(err).To(MatchError(ContainSubstring("Error retrieving resources:")))
 			})
 		})
@@ -267,7 +267,11 @@ var _ = Describe("VRops Client", func() {
 			Expect(resource.Identifier).To(Equal("an-identifier"))
 		})
 
-		ErrorsWhenAdapterKindOrResourceNotFound(&adapterKindsStatusCode, &resourcesStatusCode)
+		funcUnderTest := func(adapterKind string, resourceKind string) error {
+			_, err := client.FindResource(adapterKind, resourceKind)
+			return err
+		}
+		ErrorsWhenAdapterKindOrResourceNotFound(&adapterKindsStatusCode, &resourcesStatusCode, funcUnderTest)
 
 	})
 
@@ -310,10 +314,14 @@ var _ = Describe("VRops Client", func() {
 			)
 		})
 
-		ErrorsWhenAdapterKindOrResourceNotFound(&adapterKindsStatusCode, &resourcesStatusCode)
+		funcUnderTest := func(adapterKind string, resourceKind string) error {
+			_, err := client.GetStatsForResource(adapterKind, resourceKind, "")
+			return err
+		}
+		ErrorsWhenAdapterKindOrResourceNotFound(&adapterKindsStatusCode, &resourcesStatusCode, funcUnderTest)
 
 		It("Returns the stats for the provided resource", func() {
-			stats, err := client.GetStatsForResource("my-adapterkind", "my-resource")
+			stats, err := client.GetStatsForResource("my-adapterkind", "my-resource", "")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(stats).To(Equal(stats))
 			Expect(server.ReceivedRequests()).To(HaveLen(3))
@@ -324,7 +332,7 @@ var _ = Describe("VRops Client", func() {
 				statsStatusCode = http.StatusNotFound
 			})
 			It("returns an error", func() {
-				_, err := client.GetStatsForResource("my-adapterkind", "my-resource")
+				_, err := client.GetStatsForResource("my-adapterkind", "my-resource", "")
 				Expect(err).To(MatchError("Request failed: 404"))
 			})
 		})
@@ -341,7 +349,7 @@ var _ = Describe("VRops Client", func() {
 				)
 			})
 			It("returns an error", func() {
-				_, err := client.GetStatsForResource("my-adapterkind", "my-resource")
+				_, err := client.GetStatsForResource("my-adapterkind", "my-resource", "")
 				Expect(err).To(MatchError(ContainSubstring("Cannot parse response:")))
 			})
 		})
@@ -360,7 +368,7 @@ var _ = Describe("VRops Client", func() {
 				)
 			})
 			It("returns an error", func() {
-				_, err := client.GetStatsForResource("my-adapterkind", "my-resource")
+				_, err := client.GetStatsForResource("my-adapterkind", "my-resource", "")
 				Expect(err).To(HaveOccurred())
 			})
 		})

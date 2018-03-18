@@ -72,11 +72,12 @@ type FakeVRopsClient struct {
 	createStatsReturnsOnCall map[int]struct {
 		result1 error
 	}
-	GetStatsForResourceStub        func(string, string) (models.ListStatsResponseValuesStatListStats, error)
+	GetStatsForResourceStub        func(string, string, string) (models.ListStatsResponseValuesStatListStats, error)
 	getStatsForResourceMutex       sync.RWMutex
 	getStatsForResourceArgsForCall []struct {
 		arg1 string
 		arg2 string
+		arg3 string
 	}
 	getStatsForResourceReturns struct {
 		result1 models.ListStatsResponseValuesStatListStats
@@ -347,17 +348,18 @@ func (fake *FakeVRopsClient) CreateStatsReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeVRopsClient) GetStatsForResource(arg1 string, arg2 string) (models.ListStatsResponseValuesStatListStats, error) {
+func (fake *FakeVRopsClient) GetStatsForResource(arg1 string, arg2 string, arg3 string) (models.ListStatsResponseValuesStatListStats, error) {
 	fake.getStatsForResourceMutex.Lock()
 	ret, specificReturn := fake.getStatsForResourceReturnsOnCall[len(fake.getStatsForResourceArgsForCall)]
 	fake.getStatsForResourceArgsForCall = append(fake.getStatsForResourceArgsForCall, struct {
 		arg1 string
 		arg2 string
-	}{arg1, arg2})
-	fake.recordInvocation("GetStatsForResource", []interface{}{arg1, arg2})
+		arg3 string
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("GetStatsForResource", []interface{}{arg1, arg2, arg3})
 	fake.getStatsForResourceMutex.Unlock()
 	if fake.GetStatsForResourceStub != nil {
-		return fake.GetStatsForResourceStub(arg1, arg2)
+		return fake.GetStatsForResourceStub(arg1, arg2, arg3)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -371,10 +373,10 @@ func (fake *FakeVRopsClient) GetStatsForResourceCallCount() int {
 	return len(fake.getStatsForResourceArgsForCall)
 }
 
-func (fake *FakeVRopsClient) GetStatsForResourceArgsForCall(i int) (string, string) {
+func (fake *FakeVRopsClient) GetStatsForResourceArgsForCall(i int) (string, string, string) {
 	fake.getStatsForResourceMutex.RLock()
 	defer fake.getStatsForResourceMutex.RUnlock()
-	return fake.getStatsForResourceArgsForCall[i].arg1, fake.getStatsForResourceArgsForCall[i].arg2
+	return fake.getStatsForResourceArgsForCall[i].arg1, fake.getStatsForResourceArgsForCall[i].arg2, fake.getStatsForResourceArgsForCall[i].arg3
 }
 
 func (fake *FakeVRopsClient) GetStatsForResourceReturns(result1 models.ListStatsResponseValuesStatListStats, result2 error) {

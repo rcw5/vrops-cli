@@ -21,7 +21,7 @@ func init() {
 }
 
 func GetStats(adapterKind, resource string, client clients.VRopsClientIntf, presenter presenters.Presenter) error {
-	stats, err := client.GetStatsForResource(adapterKind, resource)
+	stats, err := client.GetStatsForResource(adapterKind, resource, "")
 	if err != nil {
 		return err
 	}
