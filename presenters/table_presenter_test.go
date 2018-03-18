@@ -61,5 +61,26 @@ var _ = Describe("TablePresenter", func() {
 `))
 
 		})
+
+		Context("#PresentStats", func() {
+			It("Returns table encoded output", func() {
+				presenter.PresentStats(fakes.FakeListStatsResponse)
+				Expect(buffer.String()).To(Equal(`+------------------+-----------------------------------+-------+
+|       NAME       |               TIME                | VALUE |
++------------------+-----------------------------------+-------+
+| stat|key         | 1970-01-01 01:00:00.001 +0100 BST |     1 |
+| stat|key         | 1970-01-01 01:00:00.002 +0100 BST |     2 |
+| stat|key         | 1970-01-01 01:00:00.003 +0100 BST |     3 |
+| stat|key         | 1970-01-01 01:00:00.004 +0100 BST |     4 |
+| stat|key         | 1970-01-01 01:00:00.005 +0100 BST |     5 |
+| another-stat|key | 1970-01-01 01:00:00.001 +0100 BST |     1 |
+| another-stat|key | 1970-01-01 01:00:00.002 +0100 BST |     2 |
+| another-stat|key | 1970-01-01 01:00:00.003 +0100 BST |     3 |
+| another-stat|key | 1970-01-01 01:00:00.004 +0100 BST |     4 |
+| another-stat|key | 1970-01-01 01:00:00.005 +0100 BST |     5 |
++------------------+-----------------------------------+-------+
+`))
+			})
+		})
 	})
 })

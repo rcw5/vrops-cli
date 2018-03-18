@@ -87,10 +87,9 @@ type IntervalUnit struct {
 }
 
 type Stat struct {
-	StatKey      string       `json:"statKey"`
-	Timestamps   []int64      `json:"timestamps"`
-	Data         []float64    `json:"data,omitempty"`
-	IntervalUnit IntervalUnit `json:"intervalUnit,omitempty"`
+	StatKey    string    `json:"statKey"`
+	Timestamps []int64   `json:"timestamps"`
+	Data       []float64 `json:"data,omitempty"`
 }
 
 type Stats []Stat
@@ -105,5 +104,17 @@ type ListStatsResponseValues struct {
 }
 
 type ListStatsResponseValuesStatList struct {
-	Stat Stats `json:"stat"`
+	Stat ListStatsResponseValuesStatListStats `json:"stat"`
 }
+
+type ListStatsResponseValuesStatListStat struct {
+	StatKey      ListStatsResponseValuesStatListStatStatKey `json:"statKey"`
+	Timestamps   []int64                                    `json:"timestamps"`
+	Data         []float64                                  `json:"data,omitempty"`
+	IntervalUnit IntervalUnit                               `json:"intervalUnit,omitempty"`
+}
+type ListStatsResponseValuesStatListStatStatKey struct {
+	Key string `json:"key"`
+}
+
+type ListStatsResponseValuesStatListStats []ListStatsResponseValuesStatListStat

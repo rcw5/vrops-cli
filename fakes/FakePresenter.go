@@ -24,6 +24,11 @@ type FakePresenter struct {
 	presentResourcesArgsForCall []struct {
 		arg1 models.Resources
 	}
+	PresentStatsStub        func(models.ListStatsResponseValuesStatListStats)
+	presentStatsMutex       sync.RWMutex
+	presentStatsArgsForCall []struct {
+		arg1 models.ListStatsResponseValuesStatListStats
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -105,6 +110,30 @@ func (fake *FakePresenter) PresentResourcesArgsForCall(i int) models.Resources {
 	return fake.presentResourcesArgsForCall[i].arg1
 }
 
+func (fake *FakePresenter) PresentStats(arg1 models.ListStatsResponseValuesStatListStats) {
+	fake.presentStatsMutex.Lock()
+	fake.presentStatsArgsForCall = append(fake.presentStatsArgsForCall, struct {
+		arg1 models.ListStatsResponseValuesStatListStats
+	}{arg1})
+	fake.recordInvocation("PresentStats", []interface{}{arg1})
+	fake.presentStatsMutex.Unlock()
+	if fake.PresentStatsStub != nil {
+		fake.PresentStatsStub(arg1)
+	}
+}
+
+func (fake *FakePresenter) PresentStatsCallCount() int {
+	fake.presentStatsMutex.RLock()
+	defer fake.presentStatsMutex.RUnlock()
+	return len(fake.presentStatsArgsForCall)
+}
+
+func (fake *FakePresenter) PresentStatsArgsForCall(i int) models.ListStatsResponseValuesStatListStats {
+	fake.presentStatsMutex.RLock()
+	defer fake.presentStatsMutex.RUnlock()
+	return fake.presentStatsArgsForCall[i].arg1
+}
+
 func (fake *FakePresenter) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -114,6 +143,8 @@ func (fake *FakePresenter) Invocations() map[string][][]interface{} {
 	defer fake.presentResourceKindsMutex.RUnlock()
 	fake.presentResourcesMutex.RLock()
 	defer fake.presentResourcesMutex.RUnlock()
+	fake.presentStatsMutex.RLock()
+	defer fake.presentStatsMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

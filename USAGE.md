@@ -275,3 +275,22 @@ Global Flags:
 | Cluster Node)                  |                                      |             |                          |             |        |
 +--------------------------------+--------------------------------------+-------------+--------------------------+-------------+--------+
 ```
+
+### `get stats`
+
+```
+List stats for a given adapterkind and resource
+
+Usage:
+  vrops-cli get stats [adapterkind] [resource] [flags]
+
+Flags:
+  -h, --help   help for stats
+
+Global Flags:
+  -o, --output string     Output format (table or json) (default "table")
+  -p, --password string   vROps password
+  -t, --target string     url to vROps instance
+      --trace             enable request tracing
+  -u, --username string   vROps username
+```

@@ -52,3 +52,18 @@ var FakeStats = models.Stats{
 		Data:       []float64{100, 90, 500},
 	},
 }
+
+var FakeListStatsResponse = models.ListStatsResponseValuesStatListStats{
+	models.ListStatsResponseValuesStatListStat{
+		StatKey:      models.ListStatsResponseValuesStatListStatStatKey{Key: "stat|key"},
+		Data:         []float64{1, 2, 3, 4, 5},
+		Timestamps:   []int64{1, 2, 3, 4, 5},
+		IntervalUnit: models.IntervalUnit{Quantifier: 1},
+	},
+	models.ListStatsResponseValuesStatListStat{
+		StatKey:      models.ListStatsResponseValuesStatListStatStatKey{Key: "another-stat|key"},
+		Data:         []float64{1, 2, 3, 4, 5},
+		Timestamps:   []int64{1, 2, 3, 4, 5},
+		IntervalUnit: models.IntervalUnit{Quantifier: 1},
+	},
+}

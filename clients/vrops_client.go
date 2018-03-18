@@ -20,7 +20,7 @@ type VRopsClientIntf interface {
 	ResourcesForAdapterKind(string) (models.Resources, error)
 	FindResource(string, string) (models.Resource, error)
 	CreateStats(string, models.Stats) error
-	GetStatsForResource(string, string) (models.Stats, error)
+	GetStatsForResource(string, string) (models.ListStatsResponseValuesStatListStats, error)
 	CreateResource(models.Resource) error
 }
 
@@ -40,24 +40,24 @@ func NewVROpsClient(url, username, password string, verbose bool) VRopsClient {
 	}
 }
 
-func (c VRopsClient) GetStatsForResource(adapterKind, resourceName string) (models.Stats, error) {
+func (c VRopsClient) GetStatsForResource(adapterKind, resourceName string) (models.ListStatsResponseValuesStatListStats, error) {
 	resource, err := c.FindResource(adapterKind, resourceName)
 	if err != nil {
-		return models.Stats{}, err
+		return models.ListStatsResponseValuesStatListStats{}, err
 	}
 	request, err := http.NewRequest("GET", c.buildUrl(fmt.Sprintf("api/resources/%s/stats", resource.Identifier)), nil)
 	if err != nil {
-		return models.Stats{}, err
+		return models.ListStatsResponseValuesStatListStats{}, err
 	}
 
 	response, err := c.do(request)
 	if err != nil {
-		return models.Stats{}, err
+		return models.ListStatsResponseValuesStatListStats{}, err
 	}
 
 	data := models.ListStatsResponse{}
 	if err := json.Unmarshal(response, &data); err != nil {
-		return models.Stats{}, fmt.Errorf("Cannot parse response: %s", err)
+		return models.ListStatsResponseValuesStatListStats{}, fmt.Errorf("Cannot parse response: %s", err)
 	}
 
 	return data.Values[0].StatList.Stat, nil

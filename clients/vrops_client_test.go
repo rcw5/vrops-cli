@@ -275,6 +275,7 @@ var _ = Describe("VRops Client", func() {
 		var adapterKindsStatusCode int
 		var resourcesStatusCode int
 		var statsStatusCode int
+		var stats models.ListStatsResponse
 
 		BeforeEach(func() {
 			adapterKindsStatusCode = http.StatusOK
@@ -283,12 +284,19 @@ var _ = Describe("VRops Client", func() {
 			server.Reset()
 			ConfigureForAdapterAndResources(&adapterKindsStatusCode, &resourcesStatusCode)
 
-			stats := models.ListStatsResponse{
+			stats = models.ListStatsResponse{
 				Values: []models.ListStatsResponseValues{
 					models.ListStatsResponseValues{
 						ResourceID: "resource-12345",
 						StatList: models.ListStatsResponseValuesStatList{
-							Stat: fakes.FakeStats,
+							Stat: models.ListStatsResponseValuesStatListStats{
+								models.ListStatsResponseValuesStatListStat{
+									StatKey:      models.ListStatsResponseValuesStatListStatStatKey{Key: "Hello"},
+									Timestamps:   []int64{100, 200, 300},
+									Data:         []float64{1, 2, 3},
+									IntervalUnit: models.IntervalUnit{Quantifier: 5},
+								},
+							},
 						},
 					},
 				},
@@ -307,7 +315,7 @@ var _ = Describe("VRops Client", func() {
 		It("Returns the stats for the provided resource", func() {
 			stats, err := client.GetStatsForResource("my-adapterkind", "my-resource")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(stats).To(Equal(fakes.FakeStats))
+			Expect(stats).To(Equal(stats))
 			Expect(server.ReceivedRequests()).To(HaveLen(3))
 		})
 

@@ -11,6 +11,7 @@ type Presenter interface {
 	PresentAdapterKinds(models.AdapterKinds)
 	PresentResourceKinds([]string)
 	PresentResources(models.Resources)
+	PresentStats(models.ListStatsResponseValuesStatListStats)
 }
 
 func NewPresenter(presenterType string) Presenter {

@@ -23,6 +23,10 @@ func (j JSONPresenter) PresentResources(resources models.Resources) {
 	j.jsonify(resources)
 }
 
+func (j JSONPresenter) PresentStats(stats models.ListStatsResponseValuesStatListStats) {
+	j.jsonify(stats)
+}
+
 func (j JSONPresenter) jsonify(intf interface{}) {
 	output, _ := json.Marshal(intf)
 	j.Buffer.Write(output)

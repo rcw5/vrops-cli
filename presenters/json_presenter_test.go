@@ -37,7 +37,15 @@ var _ = Describe("JsonPresenter", func() {
 			jsonData, err := json.Marshal(fakes.FakeAdapterKinds)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(buffer.String()).To(Equal(string(jsonData)))
+		})
+	})
 
+	Context("#PresentStats", func() {
+		It("Returns JSON encoded output", func() {
+			presenter.PresentStats(fakes.FakeListStatsResponse)
+			jsonData, err := json.Marshal(fakes.FakeListStatsResponse)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(buffer.String()).To(Equal(string(jsonData)))
 		})
 	})
 

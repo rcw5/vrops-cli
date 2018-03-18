@@ -72,18 +72,18 @@ type FakeVRopsClient struct {
 	createStatsReturnsOnCall map[int]struct {
 		result1 error
 	}
-	GetStatsForResourceStub        func(string, string) (models.Stats, error)
+	GetStatsForResourceStub        func(string, string) (models.ListStatsResponseValuesStatListStats, error)
 	getStatsForResourceMutex       sync.RWMutex
 	getStatsForResourceArgsForCall []struct {
 		arg1 string
 		arg2 string
 	}
 	getStatsForResourceReturns struct {
-		result1 models.Stats
+		result1 models.ListStatsResponseValuesStatListStats
 		result2 error
 	}
 	getStatsForResourceReturnsOnCall map[int]struct {
-		result1 models.Stats
+		result1 models.ListStatsResponseValuesStatListStats
 		result2 error
 	}
 	CreateResourceStub        func(models.Resource) error
@@ -347,7 +347,7 @@ func (fake *FakeVRopsClient) CreateStatsReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeVRopsClient) GetStatsForResource(arg1 string, arg2 string) (models.Stats, error) {
+func (fake *FakeVRopsClient) GetStatsForResource(arg1 string, arg2 string) (models.ListStatsResponseValuesStatListStats, error) {
 	fake.getStatsForResourceMutex.Lock()
 	ret, specificReturn := fake.getStatsForResourceReturnsOnCall[len(fake.getStatsForResourceArgsForCall)]
 	fake.getStatsForResourceArgsForCall = append(fake.getStatsForResourceArgsForCall, struct {
@@ -377,24 +377,24 @@ func (fake *FakeVRopsClient) GetStatsForResourceArgsForCall(i int) (string, stri
 	return fake.getStatsForResourceArgsForCall[i].arg1, fake.getStatsForResourceArgsForCall[i].arg2
 }
 
-func (fake *FakeVRopsClient) GetStatsForResourceReturns(result1 models.Stats, result2 error) {
+func (fake *FakeVRopsClient) GetStatsForResourceReturns(result1 models.ListStatsResponseValuesStatListStats, result2 error) {
 	fake.GetStatsForResourceStub = nil
 	fake.getStatsForResourceReturns = struct {
-		result1 models.Stats
+		result1 models.ListStatsResponseValuesStatListStats
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeVRopsClient) GetStatsForResourceReturnsOnCall(i int, result1 models.Stats, result2 error) {
+func (fake *FakeVRopsClient) GetStatsForResourceReturnsOnCall(i int, result1 models.ListStatsResponseValuesStatListStats, result2 error) {
 	fake.GetStatsForResourceStub = nil
 	if fake.getStatsForResourceReturnsOnCall == nil {
 		fake.getStatsForResourceReturnsOnCall = make(map[int]struct {
-			result1 models.Stats
+			result1 models.ListStatsResponseValuesStatListStats
 			result2 error
 		})
 	}
 	fake.getStatsForResourceReturnsOnCall[i] = struct {
-		result1 models.Stats
+		result1 models.ListStatsResponseValuesStatListStats
 		result2 error
 	}{result1, result2}
 }
