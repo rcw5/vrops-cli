@@ -327,6 +327,24 @@ var _ = Describe("VRops Client", func() {
 			Expect(server.ReceivedRequests()).To(HaveLen(3))
 		})
 
+		Context("When a specific stat key is provided", func() {
+			BeforeEach(func() {
+				server.SetHandler(2,
+					ghttp.CombineHandlers(
+						ghttp.VerifyRequest("GET", "/suite-api/api/resources/an-identifier/stats", "statKey=my-stat"),
+						ghttp.VerifyBasicAuth("hello", "world"),
+						ghttp.RespondWithJSONEncodedPtr(&statsStatusCode, &stats),
+					),
+				)
+			})
+			It("Returns the stats for the provided resource", func() {
+				stats, err := client.GetStatsForResource("my-adapterkind", "my-resource", "my-stat")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(stats).To(Equal(stats))
+				Expect(server.ReceivedRequests()).To(HaveLen(3))
+			})
+		})
+
 		Context("When the stats lookup fails", func() {
 			BeforeEach(func() {
 				statsStatusCode = http.StatusNotFound
@@ -351,6 +369,24 @@ var _ = Describe("VRops Client", func() {
 			It("returns an error", func() {
 				_, err := client.GetStatsForResource("my-adapterkind", "my-resource", "")
 				Expect(err).To(MatchError(ContainSubstring("Cannot parse response:")))
+			})
+		})
+
+		Context("When no stats are returned", func() {
+			BeforeEach(func() {
+				server.Reset()
+				ConfigureForAdapterAndResources(&adapterKindsStatusCode, &resourcesStatusCode)
+				server.AppendHandlers(
+					ghttp.CombineHandlers(
+						ghttp.VerifyRequest("GET", "/suite-api/api/resources/an-identifier/stats"),
+						ghttp.RespondWith(http.StatusOK, `{"values":[]}`),
+					),
+				)
+			})
+			It("returns an empty result", func() {
+				stats, err := client.GetStatsForResource("my-adapterkind", "my-resource", "")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(stats).To(BeEmpty())
 			})
 		})
 

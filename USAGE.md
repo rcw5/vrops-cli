@@ -285,7 +285,8 @@ Usage:
   vrops-cli get stats [adapterkind] [resource] [flags]
 
 Flags:
-  -h, --help   help for stats
+  -h, --help              help for stats
+      --stat-key string   Only show statistics for this key (default: all keys shown)
 
 Global Flags:
   -o, --output string     Output format (table or json) (default "table")
@@ -293,4 +294,16 @@ Global Flags:
   -t, --target string     url to vROps instance
       --trace             enable request tracing
   -u, --username string   vROps username
+```
+
+Example
+
+```
+% vrops-cli get stats ConcourseAdapter MyConcourse --stat-key 'cpu|usage'
++------------+-----------------------------------+-------+
+|    NAME    |               TIME                | VALUE |
++------------+-----------------------------------+-------+
+| cpu|usage  | 2018-03-18 18:46:58.911 +0000 GMT |    50 |
+| cpu|usage  | 2018-03-18 18:55:14.935 +0000 GMT |    75 |
++------------+-----------------------------------+-------+
 ```

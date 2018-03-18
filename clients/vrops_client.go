@@ -45,7 +45,12 @@ func (c VRopsClient) GetStatsForResource(adapterKind, resourceName, statKey stri
 	if err != nil {
 		return models.ListStatsResponseValuesStatListStats{}, err
 	}
-	request, err := http.NewRequest("GET", c.buildUrl(fmt.Sprintf("api/resources/%s/stats", resource.Identifier)), nil)
+	url := c.buildUrl(fmt.Sprintf("api/resources/%s/stats", resource.Identifier))
+	if statKey != "" {
+		url = fmt.Sprintf("%s?statKey=%s", url, statKey)
+	}
+
+	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return models.ListStatsResponseValuesStatListStats{}, err
 	}
@@ -58,6 +63,10 @@ func (c VRopsClient) GetStatsForResource(adapterKind, resourceName, statKey stri
 	data := models.ListStatsResponse{}
 	if err := json.Unmarshal(response, &data); err != nil {
 		return models.ListStatsResponseValuesStatListStats{}, fmt.Errorf("Cannot parse response: %s", err)
+	}
+
+	if len(data.Values) == 0 {
+		return models.ListStatsResponseValuesStatListStats{}, nil
 	}
 
 	return data.Values[0].StatList.Stat, nil

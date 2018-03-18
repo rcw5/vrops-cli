@@ -3,6 +3,8 @@ package presenters_test
 import (
 	"bytes"
 
+	"github.com/rcw5/vrops-cli/models"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/rcw5/vrops-cli/fakes"
@@ -63,6 +65,12 @@ var _ = Describe("TablePresenter", func() {
 		})
 
 		Context("#PresentStats", func() {
+			Context("When no stats are returned", func() {
+				It("does not display a table", func() {
+					presenter.PresentStats(models.ListStatsResponseValuesStatListStats{})
+					Expect(buffer.String()).To(Equal("No stats found\n"))
+				})
+			})
 			It("Returns table encoded output", func() {
 				presenter.PresentStats(fakes.FakeListStatsResponse)
 				Expect(buffer.String()).To(Equal(`+------------------+-----------------------------------+-------+

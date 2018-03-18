@@ -1,6 +1,7 @@
 package presenters
 
 import (
+	"fmt"
 	"io"
 	"strconv"
 	"time"
@@ -33,6 +34,10 @@ func (t TablePresenter) PresentResources(resources models.Resources) {
 }
 
 func (t TablePresenter) PresentStats(stats models.ListStatsResponseValuesStatListStats) {
+	if len(stats) == 0 {
+		fmt.Fprintf(t.Buffer, "No stats found\n")
+		return
+	}
 	table := tablewriter.NewWriter(t.Buffer)
 	table.SetHeader([]string{"Name", "Time", "Value"})
 	table.SetAutoWrapText(false)
