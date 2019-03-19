@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/olekukonko/tablewriter"
-	"github.com/rcw5/vrops-cli/models"
+	"github.com/topflight-technology/vrops-cli/models"
 )
 
 type TablePresenter struct {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/rcw5/vrops-cli/clients"
+	"github.com/topflight-technology/vrops-cli/clients"
 
 	"github.com/spf13/cobra"
 )

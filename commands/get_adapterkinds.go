@@ -1,10 +1,10 @@
 package commands
 
 import (
-	"github.com/rcw5/vrops-cli/presenters"
+	"github.com/topflight-technology/vrops-cli/presenters"
 	"github.com/spf13/cobra"
 
-	"github.com/rcw5/vrops-cli/clients"
+	"github.com/topflight-technology/vrops-cli/clients"
 )
 
 var getAdapterKindsCmd = &cobra.Command{

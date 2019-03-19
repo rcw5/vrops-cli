@@ -1,6 +1,6 @@
 package fakes
 
-import "github.com/rcw5/vrops-cli/models"
+import "github.com/topflight-technology/vrops-cli/models"
 
 var FakeResources = models.Resources{
 	models.Resource{

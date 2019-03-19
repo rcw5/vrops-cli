@@ -3,13 +3,13 @@ package presenters_test
 import (
 	"bytes"
 
-	"github.com/rcw5/vrops-cli/models"
+	"github.com/topflight-technology/vrops-cli/models"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/rcw5/vrops-cli/fakes"
+	"github.com/topflight-technology/vrops-cli/fakes"
 
-	. "github.com/rcw5/vrops-cli/presenters"
+	. "github.com/topflight-technology/vrops-cli/presenters"
 )
 
 var _ = Describe("TablePresenter", func() {

@@ -5,9 +5,9 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/rcw5/vrops-cli/commands"
-	"github.com/rcw5/vrops-cli/fakes"
-	"github.com/rcw5/vrops-cli/models"
+	"github.com/topflight-technology/vrops-cli/commands"
+	"github.com/topflight-technology/vrops-cli/fakes"
+	"github.com/topflight-technology/vrops-cli/models"
 )
 
 var _ = Describe("GetAdapterkinds", func() {

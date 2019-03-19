@@ -5,8 +5,8 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/rcw5/vrops-cli/commands"
-	"github.com/rcw5/vrops-cli/fakes"
+	"github.com/topflight-technology/vrops-cli/commands"
+	"github.com/topflight-technology/vrops-cli/fakes"
 )
 
 var _ = Describe("GetResourceKinds", func() {

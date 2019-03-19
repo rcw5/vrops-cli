@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/rcw5/vrops-cli/models"
+	"github.com/topflight-technology/vrops-cli/models"
 )
 
 //go:generate counterfeiter -o ../fakes/FakeVRopsClient.go --fake-name FakeVRopsClient . VRopsClientIntf

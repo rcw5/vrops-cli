@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/rcw5/vrops-cli/fakes"
-	"github.com/rcw5/vrops-cli/models"
+	"github.com/topflight-technology/vrops-cli/fakes"
+	"github.com/topflight-technology/vrops-cli/models"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"
-	"github.com/rcw5/vrops-cli/clients"
+	"github.com/topflight-technology/vrops-cli/clients"
 )
 
 var _ = Describe("VRops Client", func() {

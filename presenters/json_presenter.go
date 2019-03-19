@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/rcw5/vrops-cli/models"
+	"github.com/topflight-technology/vrops-cli/models"
 )
 
 type JSONPresenter struct {

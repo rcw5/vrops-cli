@@ -3,7 +3,7 @@ package presenters
 import (
 	"os"
 
-	"github.com/rcw5/vrops-cli/models"
+	"github.com/topflight-technology/vrops-cli/models"
 )
 
 //go:generate counterfeiter -o ../fakes/FakePresenter.go --fake-name FakePresenter . Presenter

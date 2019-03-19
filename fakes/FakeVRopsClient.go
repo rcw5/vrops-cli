@@ -4,8 +4,8 @@ package fakes
 import (
 	"sync"
 
-	"github.com/rcw5/vrops-cli/clients"
-	"github.com/rcw5/vrops-cli/models"
+	"github.com/topflight-technology/vrops-cli/clients"
+	"github.com/topflight-technology/vrops-cli/models"
 )
 
 type FakeVRopsClient struct {
