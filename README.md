@@ -2,12 +2,22 @@
 
 A CLI to interact with the vRealize Operations Manager SDK.
 
+## Why
+
+Use this to integrate your CI pipelines into vRealize Operations Manager. 
+
+It's really useful to use this for notifications of when your pipelines fail, or even to track the success rate of a pipeline.
+
+Even better, use it for alerting when your health checks fail.
+
+Haven't written any health checks yet? We can help! Get in touch: hello@topflight-technology.co.uk
+
 ## Installation
 
 To install:
 
 ```
-% go get -u github.com/rcw5/vrops-cli
+% go get -u github.com/topflight-technology/vrops-cli
 ```
 
 ## Usage
@@ -71,3 +81,7 @@ X-Request-Id: mv36CSpkInxWlIuJnbFVdXnkVed6tJju
 X-Xss-Protection: 1; mode=block
 ...
 ```
+
+## Issues
+
+Raise an issue if you have any problems and we'll do our best to help
