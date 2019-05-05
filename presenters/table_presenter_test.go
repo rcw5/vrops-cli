@@ -8,7 +8,6 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/topflight-technology/vrops-cli/fakes"
-
 	. "github.com/topflight-technology/vrops-cli/presenters"
 )
 
@@ -76,16 +75,16 @@ var _ = Describe("TablePresenter", func() {
 				Expect(buffer.String()).To(Equal(`+------------------+-----------------------------------+-------+
 |       NAME       |               TIME                | VALUE |
 +------------------+-----------------------------------+-------+
-| stat|key         | 1970-01-01 01:00:00.001 +0100 BST |     1 |
-| stat|key         | 1970-01-01 01:00:00.002 +0100 BST |     2 |
-| stat|key         | 1970-01-01 01:00:00.003 +0100 BST |     3 |
-| stat|key         | 1970-01-01 01:00:00.004 +0100 BST |     4 |
-| stat|key         | 1970-01-01 01:00:00.005 +0100 BST |     5 |
-| another-stat|key | 1970-01-01 01:00:00.001 +0100 BST |     1 |
-| another-stat|key | 1970-01-01 01:00:00.002 +0100 BST |     2 |
-| another-stat|key | 1970-01-01 01:00:00.003 +0100 BST |     3 |
-| another-stat|key | 1970-01-01 01:00:00.004 +0100 BST |     4 |
-| another-stat|key | 1970-01-01 01:00:00.005 +0100 BST |     5 |
+| stat|key         | 1970-01-01 00:00:00.001 +0000 UTC |     1 |
+| stat|key         | 1970-01-01 00:00:00.002 +0000 UTC |     2 |
+| stat|key         | 1970-01-01 00:00:00.003 +0000 UTC |     3 |
+| stat|key         | 1970-01-01 00:00:00.004 +0000 UTC |     4 |
+| stat|key         | 1970-01-01 00:00:00.005 +0000 UTC |     5 |
+| another-stat|key | 1970-01-01 00:00:00.001 +0000 UTC |     1 |
+| another-stat|key | 1970-01-01 00:00:00.002 +0000 UTC |     2 |
+| another-stat|key | 1970-01-01 00:00:00.003 +0000 UTC |     3 |
+| another-stat|key | 1970-01-01 00:00:00.004 +0000 UTC |     4 |
+| another-stat|key | 1970-01-01 00:00:00.005 +0000 UTC |     5 |
 +------------------+-----------------------------------+-------+
 `))
 			})

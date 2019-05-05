@@ -60,5 +60,5 @@ func (t TablePresenter) PresentResourceKinds(resourceKinds []string) {
 }
 
 func (t TablePresenter) timestampToTime(m int64) time.Time {
-	return time.Unix(0, m*int64(time.Millisecond))
+	return time.Unix(0, m*int64(time.Millisecond)).UTC()
 }
