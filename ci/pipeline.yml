@@ -1,0 +1,45 @@
+resources:
+- name: go-docker
+  type: docker-image
+  source:
+    repository: topflighttech/go-testing
+    tag: latest
+
+- name: vrops-cli-master
+  type: git
+  source:
+    uri: git@github.com:topflight-technology/vrops-cli.git
+    branch: master
+    private_key: ((github_private_key))
+
+- name: vrops-cli-stable
+  type: git
+  source:
+    uri: git@github.com:topflight-technology/vrops-cli.git
+    branch: stable
+    private_key: ((github_write_private_key))
+
+jobs:
+- name: ci
+  plan:
+  - get: vrops-cli-master
+    trigger: true
+  - get: go-docker
+  - task: run-tests
+    image: go-docker
+    config:
+      platform: linux
+      inputs:
+        - name: vrops-cli-master
+          path: vrops-cli
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          mkdir -p $GOPATH/src/github.com/topflight-technology/
+          cp -R vrops-cli $GOPATH/src/github.com/topflight-technology/vrops-cli
+          cd $GOPATH/src/github.com/topflight-technology/vrops-cli
+          ginkgo -r .
+  - put: vrops-cli-stable
+    params: { repository: vrops-cli-master }
